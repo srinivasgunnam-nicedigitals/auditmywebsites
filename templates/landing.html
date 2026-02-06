@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit My Websites - Comprehensive Website Audit Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="/static/js/toast.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-200">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24.5 14C24.5 19.799 19.799 24.5 14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M8.16667 14C8.16667 10.7783 10.7783 8.16667 14 8.16667" stroke="#4F7CFF"
+                            stroke-width="2" stroke-linecap="round" />
+                        <path
+                            d="M15.1667 14C15.1667 14.6443 14.6443 15.1667 14 15.1667C13.3556 15.1667 12.8333 14.6443 12.8333 14C12.8333 13.3556 13.3556 12.8333 14 12.8333C14.6443 12.8333 15.1667 13.3556 15.1667 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M14 14L18.6667 9.33333" stroke="#4F7CFF" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="font-bold text-white tracking-tight">Audit My Websites</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-slate-400 hover:text-white transition">Features</a>
+                <a href="#how-it-works" class="text-sm font-medium text-slate-400 hover:text-white transition">How it
+                    Works</a>
+                <a href="#testimonials"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition">Testimonials</a>
+                <a href="#faq" class="text-sm font-medium text-slate-400 hover:text-white transition">FAQ</a>
+
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    onclick="document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginModal').classList.add('flex')"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition">Sign In</button>
+                <button
+                    onclick="document.getElementById('registerModal').classList.remove('hidden'); document.getElementById('registerModal').classList.add('flex')"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative pt-32 pb-20 overflow-hidden">
+        <!-- Background Gradients -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] -z-10">
+        </div>
+        <div class="absolute bottom-0 right-0 w-[800px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] -z-10">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 text-center">
+
+            <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight mb-8">
+                Master Your <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Website
+                    Quality</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                An all-in-one platform for automated visual regression testing, accessibility auditing, mobile
+                validation, and performance analysis. Build, test, and ship with confidence.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                    onclick="document.getElementById('registerModal').classList.remove('hidden'); document.getElementById('registerModal').classList.add('flex')"
+                    class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-105 flex items-center gap-2">
+                    Start Free Audit
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+                <a href="#features"
+                    class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl border border-white/10 transition flex items-center gap-2">
+                    Explore Features
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Preview Image -->
+            <div
+                class="mt-20 relative rounded-2xl border border-white/10 shadow-2xl bg-slate-900/50 backdrop-blur-sm overflow-hidden transform perspective-1000 rotate-x-12 mx-auto max-w-5xl">
+                <div class="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
+                </div>
+                <div class="p-4 border-b border-white/5 flex items-center gap-2">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/50"></div>
+                    </div>
+                </div>
+                <!-- Mockup Content -->
+                <div class="p-8 bg-slate-900 min-h-[500px] flex flex-col gap-6">
+
+                    <!-- Dashboard Header -->
+                    <div class="flex justify-between items-center pb-6 border-b border-slate-800">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1">Dashboard Overview</h3>
+                            <p class="text-slate-500 text-sm">Welcome back.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="px-3 py-1.5 rounded bg-blue-600 text-white text-sm font-medium">New Audit</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                            <div class="text-slate-400 text-xs mb-1 uppercase tracking-wider font-semibold">Total Audits
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-2">1,284</div>
+                            <div class="text-emerald-400 text-xs flex items-center gap-1"><i data-lucide="arrow-up"
+                                    class="w-3 h-3"></i> 12% vs last week</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                            <div class="text-slate-400 text-xs mb-1 uppercase tracking-wider font-semibold">Detected
+                                Issues
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-2">24</div>
+                            <div class="text-red-400 text-xs flex items-center gap-1"><i data-lucide="arrow-up"
+                                    class="w-3 h-3"></i> 3
+                                new critical</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                            <div class="text-slate-400 text-xs mb-1 uppercase tracking-wider font-semibold">Pass Rate
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-2">98.2%</div>
+                            <div class="text-emerald-400 text-xs flex items-center gap-1"><i data-lucide="arrow-up"
+                                    class="w-3 h-3"></i> +0.4%</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                            <div class="text-slate-400 text-xs mb-1 uppercase tracking-wider font-semibold">Average
+                                Audit Time
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-2">4m 12s</div>
+                            <div class="text-slate-500 text-xs flex items-center gap-1"><i data-lucide="minus"
+                                    class="w-3 h-3"></i>
+                                Stable</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div class="grid grid-cols-3 gap-6 flex-1">
+                        <!-- Recent Activity List -->
+                        <div class="col-span-2 bg-slate-800/30 rounded-xl border border-slate-700/50 p-5">
+                            <h4 class="text-slate-300 font-semibold mb-4 text-sm">Recent Audits</h4>
+                            <div class="space-y-3">
+                                <div
+                                    class="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition border border-slate-700/30">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                                            <i data-lucide="globe" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white text-sm font-medium">• Marketing Website – Homepage
+                                            </div>
+                                            <div class="text-slate-500 text-xs">Chrome, Edge • 1080p, Mobile</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs rounded font-medium">
+                                        Passed</div>
+                                </div>
+
+                                <div
+                                    class="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition border border-slate-700/30">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                                            <i data-lucide="smartphone" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white text-sm font-medium">• User Dashboard (Mobile)</div>
+                                            <div class="text-slate-500 text-xs">iOS Safari • iPhone 15</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-2 py-1 bg-amber-500/10 text-amber-400 text-xs rounded font-medium">
+                                        Warnings Detected</div>
+                                </div>
+
+                                <div
+                                    class="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition border border-slate-700/30">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                            <i data-lucide="zap" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white text-sm font-medium">• API Documentation</div>
+                                            <div class="text-slate-500 text-xs">Lighthouse Speed Test Audit</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs rounded font-medium">
+                                        Score: 98 / 100</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visualization / Chart -->
+                        <div class="col-span-1 bg-slate-800/30 rounded-xl border border-slate-700/50 p-5 flex flex-col">
+                            <h4 class="text-slate-300 font-semibold mb-4 text-sm">Overall Quality Score</h4>
+                            <div class="flex-1 flex items-center justify-center relative">
+                                <div
+                                    class="w-32 h-32 rounded-full border-8 border-slate-700 relative flex items-center justify-center">
+                                    <div
+                                        class="absolute inset-0 rounded-full border-8 border-blue-500 border-t-transparent border-r-transparent transform -rotate-45">
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-white">A+</div>
+                                        <div class="text-xs text-slate-500">(Excellent)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 space-y-2">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-slate-400">Speed Performance</span>
+                                    <span class="text-white font-mono">94 / 100</span>
+                                </div>
+                                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full w-[94%]"></div>
+                                </div>
+
+                                <div class="flex justify-between text-xs mt-2">
+                                    <span class="text-slate-400">Accessibility</span>
+                                    <span class="text-white font-mono">97 / 100</span>
+                                </div>
+                                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-blue-500 h-full w-[97%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div id="features" class="py-24 bg-slate-950 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-bold text-white mb-6">Complete Website Quality Assurance Suite</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Everything you need to validate website quality
+                    across devices, browsers, and industry standards.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-blue-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition">
+                        <i data-lucide="camera" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Responsive Audits</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Capture pixel-perfect screenshots across Chrome, Firefox, Edge, and Safari at multiple
+                        resolutions.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-purple-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition">
+                        <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_17_83_pv)">
+                                <path
+                                    d="M11.5267 13.8067C11.6988 13.8857 11.8927 13.9038 12.0764 13.8579C12.2602 13.812 12.4228 13.7049 12.5375 13.5542L12.8333 13.1667C12.9886 12.9597 13.1899 12.7917 13.4213 12.676C13.6527 12.5603 13.9079 12.5 14.1667 12.5H16.6667C17.1087 12.5 17.5326 12.6756 17.8452 12.9882C18.1577 13.3007 18.3333 13.7247 18.3333 14.1667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1578 17.1087 18.3334 16.6667 18.3334C12.6884 18.3334 8.87311 16.753 6.06006 13.94C3.24702 11.1269 1.66667 7.3116 1.66667 3.33335C1.66667 2.89133 1.84226 2.4674 2.15482 2.15484C2.46738 1.84228 2.89131 1.66669 3.33333 1.66669H5.83333C6.27536 1.66669 6.69928 1.84228 7.01184 2.15484C7.3244 2.4674 7.5 2.89133 7.5 3.33335V5.83335C7.5 6.0921 7.43976 6.34728 7.32404 6.57871C7.20833 6.81014 7.04033 7.01144 6.83333 7.16669L6.44333 7.45919C6.29035 7.576 6.18252 7.74217 6.13816 7.92948C6.0938 8.11678 6.11565 8.31367 6.2 8.48669C7.3389 10.7999 9.21202 12.6707 11.5267 13.8067Z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </g>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">CTA Audit</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Validate phone numbers, links, and call-to-action elements to ensure proper formatting and
+                        connectivity.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-emerald-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition">
+                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Device Lab</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Simulate real devices including iPhone, Pixel, and iPad to uncover responsive layout issues.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-amber-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition">
+                        <i data-lucide="accessibility" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Accessibility Checks</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Automated WCAG 2.1 compliance testing to ensure your site is usable by everyone.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-red-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center text-red-400 mb-6 group-hover:scale-110 transition">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Speed Test Metrics</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Detailed Lighthouse performance scores for speed, SEO, and best practices.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-cyan-500/30 transition group hover:bg-slate-900">
+                    <div
+                        class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition">
+                        <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M5 16.6666V3.33331" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M15 16.6666V3.33331" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3">H1 Tags</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Analyze heading structure to ensure SEO best practices and semantic HTML compliance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div id="how-it-works" class="py-24 bg-slate-900/20 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-bold text-white mb-6">How It Works</h2>
+                <p class="text-slate-400 text-lg">Start auditing your website in minutes.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div
+                    class="hidden md:block absolute top-12 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 border-t border-dashed border-slate-700 -z-10">
+                </div>
+
+                <!-- Step 1 -->
+                <div class="relative text-center">
+                    <div
+                        class="w-24 h-24 mx-auto bg-slate-900 border border-blue-500/30 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-blue-900/20">
+                        <span class="text-3xl font-bold text-blue-500">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Upload URLs</h3>
+                    <p class="text-slate-400">Enter one or multiple URLs or paste them directly into the dashboard.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative text-center">
+                    <div
+                        class="w-24 h-24 mx-auto bg-slate-900 border border-purple-500/30 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-purple-900/20">
+                        <span class="text-3xl font-bold text-purple-500">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Configure Tests</h3>
+                    <p class="text-slate-400">Select browsers, devices, resolutions, and audit parameters.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative text-center">
+                    <div
+                        class="w-24 h-24 mx-auto bg-slate-900 border border-emerald-500/30 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-emerald-900/20">
+                        <span class="text-3xl font-bold text-emerald-500">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">View Results</h3>
+                    <p class="text-slate-400">Receive comprehensive reports with screenshots, metrics, and video
+                        recordings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div id="testimonials" class="py-24 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6">Trusted by Developers Worldwide</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="p-8 rounded-2xl bg-slate-900 border border-white/5">
+                    <div class="flex gap-1 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                    </div>
+                    <p class="text-slate-300 mb-6">“Audit My Websites saves us hours of manual testing. Visual
+                        regression
+                        audits feel effortless now.”</p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-bold text-white">
+                            R
+                        </div>
+                        <div>
+                            <p class="text-white font-medium">Rajesh</p>
+                            <p class="text-xs text-slate-500">Frontend Lead</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="p-8 rounded-2xl bg-slate-900 border border-white/5">
+                    <div class="flex gap-1 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                    </div>
+                    <p class="text-slate-300 mb-6">“The device lab helped us catch a critical layout bug before launch.”
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center font-bold text-white">
+                            D
+                        </div>
+                        <div>
+                            <p class="text-white font-medium">Durga</p>
+                            <p class="text-xs text-slate-500">QA Engineer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="p-8 rounded-2xl bg-slate-900 border border-white/5">
+                    <div class="flex gap-1 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-500 text-amber-500"></i>
+                    </div>
+                    <p class="text-slate-300 mb-6">“Clean interface, fast results, and great reporting. Highly
+                        recommended.”</p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white">
+                            P
+                        </div>
+                        <div>
+                            <p class="text-white font-medium">Praveen</p>
+                            <p class="text-xs text-slate-500">Agency Director</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FAQ Section -->
+    <div id="faq" class="py-24 bg-slate-900">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+                <p class="text-lg text-slate-400">Everything you need to know about Audit My Websites</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(1)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">What types of audits does Audit My Websites
+                            perform?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-1"></i>
+                    </button>
+                    <div id="faq-content-1" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">Audit My Websites offers comprehensive testing
+                            including
+                            Responsive Audits (visual regression across devices), Speed Test (performance metrics),
+                            Accessibility Audits (WCAG compliance), CTA Audit (phone number validation), H1 Tags
+                            analysis, Meta Tags scanning, and XML Sitemap validation.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(2)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">Is Audit My Websites free to use?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-2"></i>
+                    </button>
+                    <div id="faq-content-2" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">Yes! You can start auditing for free. Create an
+                            account and begin testing your websites immediately with access to all core features.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(3)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">How does the Responsive Audit work?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-3"></i>
+                    </button>
+                    <div id="faq-content-3" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">Our Responsive Audit captures screenshots of your site
+                            across multiple devices and resolutions (desktop, tablet, mobile). It helps identify layout
+                            issues, responsive design problems, and visual inconsistencies ensuring your site looks
+                            perfect everywhere.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(4)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">Can I audit multiple URLs at once?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-4"></i>
+                    </button>
+                    <div id="faq-content-4" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">Absolutely! You can upload a CSV file with multiple
+                            URLs or manually enter them. Our platform will process all URLs in a single session, making
+                            it easy to audit entire websites or specific page groups.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(5)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">What browsers are supported for testing?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-5"></i>
+                    </button>
+                    <div id="faq-content-5" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">We support all major browsers including Chrome,
+                            Firefox, Safari, and Edge. You can select which browsers to test against for each audit to
+                            ensure cross-browser compatibility.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(6)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">How can I access past audit reports?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-6"></i>
+                    </button>
+                    <div id="faq-content-6" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">All your audit sessions are automatically saved and
+                            can be accessed from the Audit History page. You can filter by audit type, view detailed
+                            reports, compare results, and restart previous audits anytime.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 7 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(7)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">Do I need to install any software?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-7"></i>
+                    </button>
+                    <div id="faq-content-7" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">No installation required! Audit My Websites is a fully
+                            cloud-based platform. Simply sign up, and you can start auditing from any modern web browser
+                            immediately.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 8 -->
+                <div class="bg-slate-950/50 rounded-xl border border-white/5 overflow-hidden">
+                    <button onclick="toggleFAQ(8)"
+                        class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-900/50 transition">
+                        <span class="text-lg font-semibold text-white">How long does an audit take?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon" id="faq-icon-8"></i>
+                    </button>
+                    <div id="faq-content-8" class="hidden px-6 pb-5">
+                        <p class="text-slate-400 leading-relaxed">Audit duration depends on the number of URLs and audit
+                            type. A single-page responsive audit typically takes 1-3 minutes, while comprehensive
+                            multi-URL audits may take longer. You'll see real-time progress updates during the process.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- CTA -->
+    <div class="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl lg:text-5xl font-bold text-white mb-8">Ready to Automate Your Quality Assurance?</h2>
+            <p class="text-xl text-slate-400 mb-10">Join over 5,000 developers delivering faster, more reliable web
+                experiences.</p>
+            <button
+                onclick="document.getElementById('registerModal').classList.remove('hidden'); document.getElementById('registerModal').classList.add('flex')"
+                class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-lg shadow-xl shadow-blue-600/20 transition hover:scale-105">
+                Get Started Free
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded flex items-center justify-center text-white text-xs">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24.5 14C24.5 19.799 19.799 24.5 14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M8.16667 14C8.16667 10.7783 10.7783 8.16667 14 8.16667" stroke="#4F7CFF"
+                            stroke-width="2" stroke-linecap="round" />
+                        <path
+                            d="M15.1667 14C15.1667 14.6443 14.6443 15.1667 14 15.1667C13.3556 15.1667 12.8333 14.6443 12.8333 14C12.8333 13.3556 13.3556 12.8333 14 12.8333C14.6443 12.8333 15.1667 13.3556 15.1667 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M14 14L18.6667 9.33333" stroke="#4F7CFF" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="font-semibold text-white text-sm">Audit My Websites</span>
+            </div>
+            <div class="text-slate-500 text-sm">
+                &copy; 2026 Audit My Websites. All rights reserved.
+            </div>
+            <div class="flex gap-6 items-center">
+                <a href="#" class="text-slate-400 hover:text-white transition"><i data-lucide="youtube"
+                        class="w-5 h-5"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition"><i data-lucide="instagram"
+                        class="w-5 h-5"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition" aria-label="X">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-current">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="#" class="text-slate-400 hover:text-white transition"><i data-lucide="linkedin"
+                        class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            onclick="document.getElementById('loginModal').classList.add('hidden'); document.getElementById('loginModal').classList.remove('flex')">
+        </div>
+
+        <!-- Modal Content -->
+        <div
+            class="relative w-full max-w-md p-8 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl transform transition-all">
+            <!-- Close Button -->
+            <button
+                onclick="document.getElementById('loginModal').classList.add('hidden'); document.getElementById('loginModal').classList.remove('flex')"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2 mb-8 justify-center">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24.5 14C24.5 19.799 19.799 24.5 14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M8.16667 14C8.16667 10.7783 10.7783 8.16667 14 8.16667" stroke="#4F7CFF"
+                            stroke-width="2" stroke-linecap="round" />
+                        <path
+                            d="M15.1667 14C15.1667 14.6443 14.6443 15.1667 14 15.1667C13.3556 15.1667 12.8333 14.6443 12.8333 14C12.8333 13.3556 13.3556 12.8333 14 12.8333C14.6443 12.8333 15.1667 13.3556 15.1667 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M14 14L18.6667 9.33333" stroke="#4F7CFF" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="font-bold text-white tracking-tight text-xl">Audit My Websites</span>
+            </div>
+
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-white mb-2">Welcome back</h2>
+                <p class="text-slate-400 text-sm">Enter your credentials to access your account</p>
+            </div>
+
+            <form id="modalLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Username</label>
+                    <input type="text" id="modalUsername" required
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                        placeholder="Enter your username">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Password</label>
+                    <div class="relative">
+                        <input type="password" id="modalPassword" required
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('modalPassword', this)"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 text-slate-400 cursor-pointer">
+                        <input type="checkbox"
+                            class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-slate-900">
+                        Remember me
+                    </label>
+                    <a href="/reset-password" class="text-blue-500 hover:text-blue-400 transition">Forgot password?</a>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02]">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="my-6 relative flex items-center justify-center">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-800"></div>
+                </div>
+                <span class="relative bg-slate-900 px-4 text-xs text-slate-500 uppercase tracking-wider">Or continue
+                    with</span>
+            </div>
+
+            <!-- Google Sign In Button Container -->
+            <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signin" data-ux_mode="popup"
+                data-callback="handleCredentialResponse" data-auto_prompt="false">
+            </div>
+
+            <div class="w-full flex justify-center">
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
+                    data-text="sign_in_with" data-size="large" data-logo_alignment="left" data-width="380">
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-slate-400">
+                Don't have an account? <button
+                    onclick="document.getElementById('loginModal').classList.add('hidden'); document.getElementById('loginModal').classList.remove('flex'); document.getElementById('registerModal').classList.remove('hidden'); document.getElementById('registerModal').classList.add('flex')"
+                    class="text-blue-500 hover:text-blue-400 transition font-medium">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="registerModal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            onclick="document.getElementById('registerModal').classList.add('hidden'); document.getElementById('registerModal').classList.remove('flex')">
+        </div>
+
+        <!-- Modal Content -->
+        <div
+            class="relative w-full max-w-md p-8 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl transform transition-all h-auto max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <!-- Close Button -->
+            <button
+                onclick="document.getElementById('registerModal').classList.add('hidden'); document.getElementById('registerModal').classList.remove('flex')"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Brand -->
+            <div class="flex items-center gap-2 mb-6 justify-center">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24.5 14C24.5 19.799 19.799 24.5 14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M8.16667 14C8.16667 10.7783 10.7783 8.16667 14 8.16667" stroke="#4F7CFF"
+                            stroke-width="2" stroke-linecap="round" />
+                        <path
+                            d="M15.1667 14C15.1667 14.6443 14.6443 15.1667 14 15.1667C13.3556 15.1667 12.8333 14.6443 12.8333 14C12.8333 13.3556 13.3556 12.8333 14 12.8333C14.6443 12.8333 15.1667 13.3556 15.1667 14Z"
+                            stroke="#4F7CFF" stroke-width="2" />
+                        <path d="M14 14L18.6667 9.33333" stroke="#4F7CFF" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="font-bold text-white tracking-tight text-xl">Audit My Websites</span>
+            </div>
+
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white mb-2">Create Your Account</h2>
+                <p class="text-slate-400 text-sm">Join Audit My Websites and start auditing today</p>
+            </div>
+
+            <form id="modalRegisterForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Email Address</label>
+                    <input type="email" id="modalRegEmail" required
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                        placeholder="name@company.com">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Username</label>
+                    <input type="text" id="modalRegUsername" required
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                        placeholder="username">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Password</label>
+                    <div class="relative">
+                        <input type="password" id="modalRegPassword" required
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('modalRegPassword', this)"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Confirm Password</label>
+                    <div class="relative">
+                        <input type="password" id="modalRegConfirmPassword" required
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('modalRegConfirmPassword', this)"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] mt-2">
+                    Sign Up
+                </button>
+            </form>
+
+            <div class="my-6 relative flex items-center justify-center">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-800"></div>
+                </div>
+                <span class="relative bg-slate-900 px-4 text-xs text-slate-500 uppercase tracking-wider">Or sign up
+                    with</span>
+            </div>
+
+            <div class="w-full flex justify-center">
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
+                    data-text="signup_with" data-size="large" data-logo_alignment="left" data-width="380">
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-sm text-slate-400">
+                Already have an account? <button
+                    onclick="document.getElementById('registerModal').classList.add('hidden'); document.getElementById('registerModal').classList.remove('flex'); document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginModal').classList.add('flex')"
+                    class="text-blue-500 hover:text-blue-400 transition font-medium">Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons(); // Re-render icons
+        }
+
+        async function handleCredentialResponse(response) {
+            try {
+                const res = await fetch("/api/auth/google", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token: response.credential })
+                });
+
+                if (res.ok) {
+                    // Redirect to dashboard
+                    const data = await res.json();
+                    window.location.href = data.redirect_url || "/platform/dashboard";
+                } else {
+                    const error = await res.json();
+                    showToast("Google Login Failed: " + (error.detail || "Unknown error"), 'error');
+                }
+            } catch (e) {
+                console.error("Google Auth Error:", e);
+                showToast("An error occurred during Google Sign In.", 'error');
+            }
+        }
+
+        // Login Form Logic
+        document.getElementById('modalLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('modalUsername').value;
+            const password = document.getElementById('modalPassword').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Signing in...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/platform/dashboard';
+                } else {
+                    const data = await response.json();
+                    showToast(data.detail || 'Login failed', 'error');
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                showToast('An error occurred during login', 'error');
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Register Form Logic
+        document.getElementById('modalRegisterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('modalRegEmail').value;
+            const username = document.getElementById('modalRegUsername').value;
+            const password = document.getElementById('modalRegPassword').value;
+            const confirmPassword = document.getElementById('modalRegConfirmPassword').value;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', 'warning');
+                return;
+            }
+
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Creating Account...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, password })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/platform/dashboard';
+                } else {
+                    const data = await response.json();
+                    showToast(data.detail || 'Registration failed', 'error');
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                showToast('An error occurred during registration', 'error');
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        // Toggle FAQ function
+        function toggleFAQ(id) {
+            const content = document.getElementById(`faq-content-${id}`);
+            const icon = document.getElementById(`faq-icon-${id}`);
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+    </script>
+</body>
+
+</html>
