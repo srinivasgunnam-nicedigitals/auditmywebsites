@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit My Websites - XML Sitemaps Audit</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.13">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body,
+        button,
+        input,
+        select,
+        textarea,
+        .sidebar,
+        .nav-item {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="/static/svg/sitetester-icon.svg" alt="Logo" class="brand-logo" width="24" height="15">
+            <span>Audit My Websites</span>
+            <img src="/static/svg/sitetesterright.svg" alt="Toggle Sidebar" id="sidebar-toggle" class="sidebar-toggle"
+                width="28" height="28">
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-title">Platform</div>
+
+        <a href="/platform/dashboard" class="nav-item">
+            <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
+            <span>Dashboard</span>
+        </a>
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/audit-history.svg" class="icon" alt=""><span>Audit
+                    History</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/history" class="nav-item">
+                <img src="/static/svg/view-history.svg" class="icon" alt="">
+                <span>All Audits</span>
+            </a>
+            <a href="/platform/history?type=static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/history?type=performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/history?type=accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/platform/history?type=phone" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/platform/history?type=h1" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/platform/history?type=meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Meta Tags</span>
+            </a>
+            <a href="/platform/history?type=sitemap" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
+                    Tools</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu open">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item active">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+
+        <div style="flex: 1;"></div>
+        <a href="/platform/settings" class="nav-item">
+            <img src="/static/svg/settings.svg" class="icon" alt="">
+            <span>Settings</span>
+        </a>
+        <a href="#" onclick="showLogoutModal(event)" class="nav-item">
+            <img src="/static/svg/logout.svg" class="icon" alt="">
+            <span>Logout</span>
+        </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+
+            <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header"
+                style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+
+                <img src="/static/svg/logout.svg" alt="Logout" width="20" height="20">
+
+                <span>Logout</span>
+
+            </a>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>XML Sitemaps Audit</h1>
+                </div>
+                <button class="view-history-btn" data-type="sitemap">
+                    <img src="/static/svg/view-history.svg" alt="" width="20" height="20">
+                    <span class="view-history-text">View History</span>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="scanner-grid">
+                    <!-- Left Column -->
+                    <div class="column">
+                        <div class="form-group">
+                            <label class="form-label">Enter Project Name<span class="required">*</span></label>
+                            <input type="text" class="form-input" name="session_name" placeholder="Enter project name">
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="column">
+                        <div class="form-group">
+                            <label class="form-label">Page URL<span class="required">*</span></label>
+                            <input type="text" class="form-input" name="url" placeholder="https://example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-ghost reset-btn">Reset</button>
+                    <button class="btn btn-primary start-audit-btn" id="start-sitemap-scan">Start Sitemap Scan</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Audit Progress Modal (Simplified for demo) -->
+    <div class="modal-overlay" id="audit-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>XML Sitemap Scan in Progress</h3>
+                <p class="modal-subtitle">Parsing sitemap structure and verifying URL accessibility...</p>
+                <div class="modal-close">&times;</div>
+            </div>
+            <div class="audit-progress-container"
+                style="display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                <div class="audit-progress-bar" style="position: absolute; left: 0; height: 100%;"></div>
+                <span class="audit-progress-text" style="position: relative; z-index: 1;">0%</span>
+            </div>
+            <div class="progress-status">Processing URL <span id="processed-url-count">0</span> of
+                <span id="total-url-count">0</span>
+            </div>
+            <button class="stop-session-btn" id="stop-btn">
+                <img src="/static/svg/close-white.svg" alt="" width="16" height="16">
+                Stop Session
+            </button>
+            <a href="#" class="view-report-btn" style="display: none;">View Scan Report</a>
+        </div>
+
+        <!-- Custom Confirmation Modal -->
+        <div id="confirm-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h3 id="confirm-title">Are you sure?</h3>
+                    <p id="confirm-message" class="modal-subtitle" style="margin-bottom: 2rem;">This action cannot
+                        be
+                        undone.</p>
+                </div>
+                <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="confirm-cancel" class="btn btn-ghost" style="flex: 1;">Cancel</button>
+                    <button id="confirm-proceed" class="btn btn-primary"
+                        style="flex: 1; background-color: var(--primary-blue);">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js?v=2.14"></script>
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-confirm-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 400px; width: 100%;">
+            <div class="modal-header">
+                <h3>Confirm Logout</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: #cbd5e1; margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
+                <div class="modal-actions"
+                    style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="closeLogoutModal()">Cancel</button>
+                    <a href="/logout" class="btn btn-primary"
+                        style="background-color: #EF4444; border-color: #EF4444;">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutModal(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeLogoutModal() {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        window.addEventListener('click', function (e) {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (e.target === modal) {
+                closeLogoutModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
