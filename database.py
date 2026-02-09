@@ -20,14 +20,18 @@ if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 # Connection pooling configuration
-engine = create_engine(
-    DATABASE_URL,
-    connect_args=connect_args,
-    pool_size=10 if not DATABASE_URL.startswith("sqlite") else None,
-    max_overflow=20 if not DATABASE_URL.startswith("sqlite") else None,
-    pool_recycle=3600,
-    echo=False
-)
+engine_kwargs = {
+    "connect_args": connect_args,
+    "pool_recycle": 3600,
+    "echo": False
+}
+
+# Only add extra pooling for non-SQLite (PostgreSQL)
+if not DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["pool_size"] = 10
+    engine_kwargs["max_overflow"] = 20
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

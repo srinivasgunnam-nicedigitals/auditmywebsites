@@ -5,14 +5,14 @@ Centralizes all environment variables and application settings
 
 from pydantic_settings import BaseSettings
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Database Configuration
-    database_url: str
+    database_url: Optional[str] = None
     
     # Google Configuration
     google_client_id: str
