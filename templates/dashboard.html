@@ -329,7 +329,8 @@
                                             {% elif 'h1' in t_lower %}{% set result_type = 'h1' %}
                                             {% elif 'phone' in t_lower or 'cta' in t_lower %}{% set result_type =
                                             'phone' %}
-                                            {% elif 'static' in t_lower %}{% set result_type = 'static' %}
+                                            {% elif 'static' in t_lower or 'responsive' in t_lower %}{% set result_type
+                                            = 'static' %}
                                             {% elif 'dynamic' in t_lower %}{% set result_type = 'dynamic' %}
                                             {% elif 'accessibility' in t_lower %}{% set result_type = 'accessibility' %}
                                             {% else %}{% set result_type = t_lower %}{% endif %}

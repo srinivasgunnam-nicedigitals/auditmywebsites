@@ -10,15 +10,21 @@ load_dotenv()
 
 # Create database directory if it doesn't exist
 os.makedirs("database", exist_ok=True)
-# SQLite Configuration
-DATABASE_URL = "sqlite:///./sitetoolpro.db"
+
+# Database Configuration from environment or settings
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./sitetoolpro.db"
+
+# Connection arguments
+connect_args = {}
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
 
 # Connection pooling configuration
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False}, # Required for SQLite
-    pool_size=10,
-    max_overflow=20,
+    connect_args=connect_args,
+    pool_size=10 if not DATABASE_URL.startswith("sqlite") else None,
+    max_overflow=20 if not DATABASE_URL.startswith("sqlite") else None,
     pool_recycle=3600,
     echo=False
 )

@@ -326,8 +326,7 @@
 
             <div class="tabs-container">
                 {% for browser in browsers %}
-                <div class="tab {{ 'active' if loop.first else '' }}" data-browser="{{ browser|lower }}"
-                    onclick="filterByBrowser('{{ browser|lower }}', this)">
+                <div class="tab {{ 'active' if loop.first else '' }}" onclick="filterByBrowser('{{ browser }}', this)">
                     {{ browser|capitalize }}</div>
                 {% endfor %}
             </div>

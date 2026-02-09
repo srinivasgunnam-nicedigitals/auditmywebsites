@@ -421,8 +421,8 @@ async def capture_screenshots(urls: List[str], browsers: List[str], resolutions:
                             
                             # Try different navigation strategies
                             if attempt == 0:
-                                # First attempt: Standard approach
-                                await page.goto(url, wait_until="domcontentloaded", timeout=25000)
+                                # First attempt: Standard approach (increased to 60s)
+                                await page.goto(url, wait_until="domcontentloaded", timeout=60000)
                             elif attempt == 1:
                                 # Second attempt: Faster loading
                                 await page.goto(url, wait_until="commit", timeout=20000)
@@ -862,7 +862,7 @@ async def record_fullpage_video(page, url: str, w: int, h: int, session_folder: 
         
         # 1. Smarter Navigation
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            await page.goto(url, wait_until="domcontentloaded", timeout=90000)
             await page.wait_for_load_state("networkidle", timeout=10000)
         except:
              pass 
@@ -985,7 +985,7 @@ async def audit_h1_tags(urls: List[str], session_id: str, user_id: int, db: Sess
                         page = await context.new_page()
                         # Wait for network idle to handle redirects/loading
                         try:
-                            await page.goto(url, wait_until="networkidle", timeout=45000)
+                            await page.goto(url, wait_until="networkidle", timeout=60000)
                         except Exception:
                             # Fallback if networkidle times out, just load
                             await page.goto(url, wait_until="domcontentloaded", timeout=30000)
@@ -1281,20 +1281,24 @@ def dynamic_audit_task(urls: List[str], browsers: List[str], resolutions: List[s
         if sys.platform == 'win32':
              asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
              
-        # Create session record
-        session = models.AuditSession(
-            session_id=session_id,
-            user_id=user_id,
-            session_type="dynamic",
-            name=session_name,
-            urls=json.dumps(urls),
-            browsers=json.dumps(browsers),
-            resolutions=json.dumps(resolutions),
-            total_expected=len(urls) * len([b for b in browsers if b in ["Chrome", "Edge"]]) * len(resolutions),
-            status="running"
-        )
-        db.add(session)
-        db.commit()
+        # Check if session already exists (e.g. restart)
+        existing_session = db.query(models.AuditSession).filter(models.AuditSession.session_id == session_id).first()
+        
+        if not existing_session:
+            # Create session record
+            session = models.AuditSession(
+                session_id=session_id,
+                user_id=user_id,
+                session_type="dynamic",
+                name=session_name,
+                urls=json.dumps(urls),
+                browsers=json.dumps(browsers),
+                resolutions=json.dumps(resolutions),
+                total_expected=len(urls) * len([b for b in browsers if b in ["Chrome", "Edge"]]) * len(resolutions),
+                status="running"
+            )
+            db.add(session)
+            db.commit()
         
         # Run the audit
         asyncio.run(record_videos_async(urls, browsers, selected_res, session_id, user_id, db, access_token))
@@ -1308,20 +1312,29 @@ def h1_audit_task(urls: List[str], session_id: str, user_id: int, session_name: 
         if sys.platform == 'win32':
              asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
              
-        # Create session record
-        session = models.AuditSession(
-            session_id=session_id,
-            user_id=user_id,
-            session_type="h1",
-            name=session_name,
-            urls=json.dumps(urls),
-            browsers=json.dumps([]),
-            resolutions=json.dumps([]),
-            total_expected=len(urls),
-            status="running"
-        )
-        db.add(session)
-        db.commit()
+        # Check if session already exists (for restart case)
+        session = db.query(models.AuditSession).filter_by(session_id=session_id).first()
+        
+        if not session:
+            # Create session record (for new upload case)
+            session = models.AuditSession(
+                session_id=session_id,
+                user_id=user_id,
+                session_type="h1",
+                name=session_name,
+                urls=json.dumps(urls),
+                browsers=json.dumps([]),
+                resolutions=json.dumps([]),
+                total_expected=len(urls),
+                status="running"
+            )
+            db.add(session)
+            db.commit()
+        else:
+             # Ensure status is running
+             if session.status != "running":
+                 session.status = "running"
+                 db.commit()
         
         # Run the audit
         asyncio.run(audit_h1_tags(urls, session_id, user_id, db))
@@ -1361,13 +1374,19 @@ async def _audit_performance_task_logic(urls: List[str], session_id: str, strate
                         return
 
                     try:
-                        context = await browser.new_context(
-                            **(p.devices['iPhone 12'] if strategy == "mobile" else {})
-                        )
+                        if strategy == "mobile":
+                            context_args = p.devices['iPhone 12']
+                        else:
+                            context_args = {
+                                "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+                                "viewport": {"width": 1920, "height": 1080}
+                            }
+                            
+                        context = await browser.new_context(**context_args)
                         page = await context.new_page()
                         
                         start_time = datetime.utcnow()
-                        await page.goto(url, wait_until="load", timeout=60000)
+                        await page.goto(url, wait_until="load", timeout=90000)
                         
                         # Capture modern metrics via JS
                         metrics = await page.evaluate("""() => {
@@ -1462,7 +1481,7 @@ async def audit_meta_tags_logic(urls: List[str], session_id: str):
                     break
                 
                 try:
-                    resp = await client.get(url, timeout=30)
+                    resp = await client.get(url, timeout=60)
                     html = resp.text
                     soup = BeautifulSoup(html, "html.parser")
                     
@@ -1639,7 +1658,7 @@ async def _audit_accessibility_task_logic(urls: List[str], session_id: str):
                     
                     try:
                         page = await browser.new_page()
-                        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                        await page.goto(url, wait_until="domcontentloaded", timeout=90000)
                         
                         # Inject and run axe
                         await page.evaluate(axe_source)
@@ -1727,7 +1746,7 @@ async def audit_phone_numbers(urls: List[str], target_numbers: List[str], option
                     print(f"[CTA AUDIT] Discovering numbers on {url}")
                     
                     page = await context.new_page()
-                    await page.goto(url, wait_until="networkidle", timeout=45000)
+                    await page.goto(url, wait_until="networkidle", timeout=90000)
                     
                     # Get page content and text
                     content = await page.content()
@@ -3696,7 +3715,26 @@ async def audit_sitemap_logic(sitemap_url: str, session_id: str):
 
             except Exception as e:
                 print(f"Sitemap Error: {e}")
-                session.status = "error"
+                # Create error result so user sees "Missing" instead of "No Data"
+                error_result = models.SitemapResult(
+                    session_id=session_id,
+                    url=sitemap_url,
+                    is_index=False,
+                    url_count=0,
+                    child_sitemaps=json.dumps([]),
+                    robots_status="missing",
+                    load_time_ms=0,
+                    reachability_sample=json.dumps({}),
+                    score=0,
+                    errors=json.dumps([str(e)])
+                )
+                db.add(error_result)
+                
+                # Mark session as completed so report is viewable
+                if session:
+                    session.status = "completed"
+                    session.completed = 1
+                    session.completed_at = datetime.utcnow()
                 db.commit()
     except Exception as fatal:
         print(f"Sitemap Fatal: {fatal}")
@@ -5107,75 +5145,139 @@ async def delete_audit_session(session_id: str,
     return {"message": "Session deleted successfully"}
 
 @app.post("/api/audit/{session_id}/restart")
-async def restart_audit_session(session_id: str, 
-                              background_tasks: BackgroundTasks,
-                              user: models.User = Depends(require_auth), 
-                              db: Session = Depends(auth.get_db)):
-    """Restart an existing audit session by creating a new one with same config"""
-    old_session = db.query(models.AuditSession).filter(models.AuditSession.session_id == session_id).first()
+async def restart_audit_session(
+    session_id: str,
+    background_tasks: BackgroundTasks,
+    user: models.User = Depends(require_auth),
+    db: Session = Depends(auth.get_db)
+):
+    """Restart an existing audit session by creating a new one"""
+
+    # Get old session
+    old_session = db.query(models.AuditSession)\
+        .filter(models.AuditSession.session_id == session_id)\
+        .first()
+
     if not old_session:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    # Create new session ID
+    # Check ownership
+    if old_session.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    # Generate new session ID
     new_session_id = str(uuid.uuid4())
-    
-    # Create new session object copying config from old one
+
+    # Create new session (copy config)
     new_session = models.AuditSession(
         session_id=new_session_id,
         user_id=user.id,
-        name=f"{old_session.name} (Restart)",
+        session_type=old_session.session_type,
+        name=f"{old_session.name} (Restarted)",
         urls=old_session.urls,
         browsers=old_session.browsers,
         resolutions=old_session.resolutions,
-        session_type=old_session.session_type,
+        total_expected=old_session.total_expected,
         status="running",
-        total_expected=old_session.total_expected, # Initial estimate, will be updated
-        completed=0,
-        created_at=datetime.utcnow()
+        completed=0
     )
-    
+
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
-    
-    # Parse config
-    urls = json.loads(new_session.urls) if new_session.urls else []
-    
-    # Re-trigger based on type using NEW session ID
-    if new_session.session_type == "static":
-        browsers = json.loads(new_session.browsers) if new_session.browsers else []
-        resolutions = json.loads(new_session.resolutions) if new_session.resolutions else []
-        background_tasks.add_task(static_audit_task, urls, browsers, resolutions, new_session_id, user.id, new_session.name)
-        
-    elif new_session.session_type == "dynamic":
-        browsers = json.loads(new_session.browsers) if new_session.browsers else []
-        resolutions = json.loads(new_session.resolutions) if new_session.resolutions else []
-        background_tasks.add_task(dynamic_audit_task, urls, browsers, resolutions, new_session_id, user.id, new_session.name)
-        
-    elif new_session.session_type == "h1":
-        background_tasks.add_task(h1_audit_task, urls, new_session_id, user.id, new_session.name)
-        
-    elif new_session.session_type == "performance":
-         browsers = json.loads(new_session.browsers) if new_session.browsers else []
-         strategy = browsers[0] if browsers else "desktop"
-         background_tasks.add_task(audit_performance_task, urls, new_session_id, strategy)
-         
-    elif new_session.session_type == "meta-tags":
-        background_tasks.add_task(audit_meta_tags_logic, urls, new_session_id)
-         
-    elif new_session.session_type == "phone":
-        # Phone/CTA audit
-        options = ["format", "links", "schema"] # Default options
-        target_numbers = [] # Missing from session record currently
-        background_tasks.add_task(phone_audit_task, urls, target_numbers, options, new_session_id, user.id, new_session.name)
-         
-    elif new_session.session_type == "sitemap":
-         # Sitemap audit
-         # Logic might expect a single URL
-         target_url = urls[0] if urls else ""
-         background_tasks.add_task(audit_sitemap_logic, target_url, new_session_id)
 
-    return {"message": "Session restarted", "session_id": new_session_id, "old_session_id": session_id}
+    # Restart based on type
+    if old_session.session_type == "h1":
+        background_tasks.add_task(
+            h1_audit_task,
+            json.loads(old_session.urls),
+            new_session_id,
+            user.id,
+            new_session.name
+        )
+
+    elif old_session.session_type == "static":
+        background_tasks.add_task(
+            static_audit_task,
+            json.loads(old_session.urls),
+            json.loads(old_session.browsers),
+            json.loads(old_session.resolutions),
+            new_session_id,
+            user.id,
+            new_session.name
+        )
+
+    elif old_session.session_type == "dynamic":
+        background_tasks.add_task(
+            dynamic_audit_task,
+            json.loads(old_session.urls),
+            json.loads(old_session.browsers),
+            json.loads(old_session.resolutions),
+            new_session_id,
+            user.id,
+            new_session.name
+        )
+
+    elif old_session.session_type == "performance":
+        urls_list = json.loads(old_session.urls)
+        strategy = "desktop"
+        try:
+            browsers_list = json.loads(old_session.browsers)
+            if browsers_list:
+                strategy = browsers_list[0]
+        except:
+            pass
+        
+        background_tasks.add_task(
+            audit_performance_task,
+            urls_list,
+            new_session_id,
+            strategy
+        )
+
+    elif old_session.session_type == "accessibility":
+        background_tasks.add_task(
+            audit_accessibility_task,
+            json.loads(old_session.urls),
+            new_session_id
+        )
+
+    elif old_session.session_type == "phone":
+        # Phone audit targets/options are not currently stored in AuditSession.
+        # We restart with defaults (no specific targets, default check).
+        background_tasks.add_task(
+            phone_audit_task,
+            json.loads(old_session.urls),
+            [], # target_numbers - not stored
+            ["format_check"], # options - default
+            new_session_id,
+            user.id,
+            new_session.name
+        )
+
+    elif old_session.session_type == "meta-tags":
+        background_tasks.add_task(
+            audit_meta_tags_logic,
+            json.loads(old_session.urls),
+            new_session_id
+        )
+
+    elif old_session.session_type == "sitemap":
+        urls_list = json.loads(old_session.urls)
+        if urls_list:
+            clean_url = urls_list[0]
+            background_tasks.add_task(
+                audit_sitemap_logic,
+                clean_url,
+                new_session_id
+            )
+
+    return {
+        "message": "Audit restarted successfully",
+        "session_id": new_session_id,
+        "session": new_session_id,
+        "new_session_id": new_session_id
+    }
 
 # ========== USER PROFILE ROUTE ==========
 @app.get("/platform/settings", response_class=HTMLResponse)

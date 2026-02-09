@@ -354,22 +354,22 @@
             <div class="browser-row">
                 <div class="tabs-container">
                     {% for browser in session.browsers %}
-                    <a href="/results/static/{{ session_id }}/snapshots?url={{ target_url|urlencode }}&browser={{ browser|urlencode }}"
-                        class="tab {{ 'active' if browser == current_browser else '' }}" style="text-decoration: none;">
+                    <a href="/results/static/{{ session_id }}/snapshots?url={{ target_url|urlencode }}&browser={{ browser|capitalize|urlencode }}"
+                        class="tab {{ 'active' if browser|capitalize == current_browser|capitalize else '' }}" style="text-decoration: none;">
                         {{ browser|capitalize }}
                     </a>
                     {% endfor %}
                 </div>
                 <div class="nav-links" style="margin-left: auto;">
                     {% if prev_url %}
-                    <a href="/results/static/{{ session_id }}/snapshots?url={{ prev_url|urlencode }}&browser={{ current_browser|urlencode }}"
+                    <a href="/results/static/{{ session_id }}/snapshots?url={{ prev_url|urlencode }}&browser={{ current_browser|capitalize|urlencode }}"
                         class="nav-link">
                         <img src="/static/svg/nav-arrow-left.svg" width="20" height="20">
                         <span>Previous URL</span>
                     </a>
                     {% endif %}
                     {% if next_url %}
-                    <a href="/results/static/{{ session_id }}/snapshots?url={{ next_url|urlencode }}&browser={{ current_browser|urlencode }}"
+                    <a href="/results/static/{{ session_id }}/snapshots?url={{ next_url|urlencode }}&browser={{ current_browser|capitalize|urlencode }}"
                         class="nav-link" style="margin-left: 1.5rem;">
                         <span>Next URL</span>
                         <img src="/static/svg/nav-arrow-right.svg" width="20" height="20">
