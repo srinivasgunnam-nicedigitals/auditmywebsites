@@ -65,10 +65,8 @@ async def audit_meta_tags_logic(urls: List[str], session_id: str, crawl_data: di
         ) as client:
             # Get user_id from session for credit deduction
             user_id = session.user_id
-            completed_count = 0
-            
+
             async def process_url(url):
-                nonlocal completed_count
                 async with sem:
                     task_db = SessionLocal()
                     try:
@@ -203,19 +201,14 @@ async def audit_meta_tags_logic(urls: List[str], session_id: str, crawl_data: di
                 batch = urls[i:i+batch_size]
                 await asyncio.gather(*[process_url(u) for u in batch])
                 
-                # Update progress once per batch
+                # Check for a stop request once per batch (completed count is already
+                # tracked per-URL via the atomic increments in process_url)
                 try:
                     prog_db = SessionLocal()
                     s_prog = prog_db.query(models.AuditSession).filter_by(session_id=session_id).first()
-                    if s_prog:
-                        # Atomic update (this one is once per batch, but let's be safe)
-                        prog_db.query(models.AuditSession).filter_by(session_id=session_id).update({
-                            models.AuditSession.completed: completed_count
-                        })
-                        if s_prog.status == "stopped":
-                            prog_db.close()
-                            break
-                        await asyncio.to_thread(prog_db.commit)
+                    if s_prog and s_prog.status == "stopped":
+                        prog_db.close()
+                        break
                     prog_db.close()
                 except: pass
 

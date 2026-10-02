@@ -1,5 +1,10 @@
 # Core Framework
-fastapi>=0.109.0
+# NOTE: fastapi/starlette pinned below 1.0 because this codebase calls
+# templates.TemplateResponse(name, context) using the legacy (pre-Starlette-1.0)
+# positional signature everywhere; Starlette >=1.0 made `request` a hard-required
+# first argument and removed that call style, which crashes every templated route.
+fastapi>=0.109.0,<0.116.0
+starlette<0.41.0
 uvicorn[standard]>=0.27.0
 python-multipart>=0.0.6
 jinja2>=3.1.3
@@ -19,6 +24,8 @@ requests>=2.31.0
 playwright>=1.41.0
 pillow>=10.2.0
 numpy>=1.26.3
+imageio>=2.34.0
+imageio-ffmpeg>=0.4.9
 
 # Utilities
 httpx>=0.26.0
@@ -26,3 +33,4 @@ phonenumbers>=8.13.27
 python-dotenv>=1.0.0
 pydantic-settings>=2.0.0
 beautifulsoup4>=4.12.0
+redis>=5.0.0

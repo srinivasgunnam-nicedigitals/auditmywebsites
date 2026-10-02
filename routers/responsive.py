@@ -284,8 +284,19 @@ async def capture_screenshots(urls: List[str], browsers: List[str], resolutions:
 
                 try:
                     browser = await browser_map[browser_name].launch(**launch_args)
-                except:
-                    return
+                except Exception as e:
+                    # Real Chrome/Edge binary not installed on this host - fall back to
+                    # Playwright's bundled Chromium rather than silently producing zero results.
+                    if "channel" in launch_args:
+                        print(f"Browser channel '{launch_args['channel']}' unavailable ({e}), falling back to bundled Chromium")
+                        try:
+                            browser = await browser_map[browser_name].launch(headless=True)
+                        except Exception as e2:
+                            print(f"Bundled Chromium launch also failed: {e2}")
+                            return
+                    else:
+                        print(f"Failed to launch {browser_name}: {e}")
+                        return
 
                 context_args = {
                     "viewport": {"width": 1280, "height": 720},
@@ -395,7 +406,13 @@ async def record_videos_async(urls: List[str], selected_browsers: List[str],
             async def run_browser(browser_name: str):
                 os.makedirs(f"{session_folder}/{browser_name}", exist_ok=True)
                 launch_args = {"headless": True, "channel": "chrome" if browser_name == "Chrome" else "msedge"}
-                browser = await browser_map[browser_name].launch(**launch_args)
+                try:
+                    browser = await browser_map[browser_name].launch(**launch_args)
+                except Exception as e:
+                    # Real Chrome/Edge binary not installed on this host - fall back to
+                    # Playwright's bundled Chromium rather than failing the whole session.
+                    print(f"Browser channel '{launch_args['channel']}' unavailable ({e}), falling back to bundled Chromium")
+                    browser = await browser_map[browser_name].launch(headless=True)
                 context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 
                 async def worker(url):
@@ -477,7 +494,7 @@ def dynamic_audit_task(urls: List[str], browsers: List[str], resolutions: List[s
 
 @router.get("/responsive", response_class=HTMLResponse)
 async def responsive_page(request: Request, user = Depends(require_auth)):
-    return templates.TemplateResponse("static_snapshots.html", {"request": request, "user": user})
+    return templates.TemplateResponse("static.html", {"request": request, "user": user})
 
 @router.get("/responsive/static", response_class=HTMLResponse)
 async def static_audit_page(request: Request, user = Depends(require_auth)):
@@ -485,7 +502,7 @@ async def static_audit_page(request: Request, user = Depends(require_auth)):
 
 @router.get("/responsive/dynamic", response_class=HTMLResponse)
 async def dynamic_audit_page(request: Request, user = Depends(require_auth)):
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+    return templates.TemplateResponse("static.html", {"request": request, "user": user})
 
 @router.get("/platform/static", response_class=HTMLResponse)
 async def static_audit_platform(request: Request, user = Depends(require_auth)):
