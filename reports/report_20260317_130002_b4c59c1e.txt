@@ -1,0 +1,88 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/aboutus/
+Live:    https://mikeschaferlaw.com/aboutus/
+Date:    2026-03-17 13:00:02
+
+SUMMARY
+- Similarity Score: 43%
+- Added Lines:      218
+- Removed Lines:    145
+- Modified Lines:   8
+
+OBSERVATIONS
+- 📝 Moderate rewriting detected across the page.
+- 💰 Pricing-related content changes detected. Please verify accuracy.
+- 📞 Contact information or CTA changes detected.
+- 📊 Page Title changed, which may impact SEO and click-through rates.
+- 📄 Meta Description updated, potentially affecting search snippet appearance.
+
+ADDED CONTENT (top 20)
++ ×
++ Home
++ Practice areas
++ Jeffersontown Car Accident Attorney
++ Jeffersontown Motorcycle Accident Attorney
++ Uber Accident Lawyer
++ Lyft Accident Lawyer
++ Slip and Fall Accidents
++ Child Injury Attorney
++ Areas Served
++ Faqs
++ ×
++ English
++ Español
++ Get a Free Case Review
++ 502-584-9511
++ Home
++ Practice areas
++ Personal Injury Lawyer
++ Frankfort Personal Injury Lawyer
+
+REMOVED CONTENT (top 20)
+- (502) 584-9511
+- Hablamos Espanol
+- Louisville Personal Injury Attorneys | The Schafer Law Office
+- Practice Area
+- Jeffersontown Car Accident Lawyer
+- Jeffersontown Motorcycle Accident Lawyer
+- Slip And Fall Accidents
+- Child Injury Attorneys
+- FAQs
+- Video Library
+- Wave Listens Videos
+- Free Books
+- Press Releases
+- Scholarship
+- Accident Map
+- Blog
+- Free Consultation
+- Menu
+- Close Menu
+- Practice Area
+
+MODIFIED CONTENT (top 20)
+OLD: Personal Injury
+NEW: Personal Injury Lawyer
+----------
+OLD: Frankfort Injury Lawyer
+NEW: Frankfort Personal Injury Lawyer
+----------
+OLD: Jeffersontown Injury Lawyer
+NEW: Jeffersontown Personal Injury Lawyer
+----------
+OLD: Truck Accident Lawyers
+NEW: Truck Accident Attorney
+----------
+OLD: Delivery Truck Accident
+NEW: Delivery Truck Accidents
+----------
+OLD: Wrongful Death And Fatal Accidents
+NEW: Wrongful Death Lawyer
+----------
+OLD: Contact Us
+NEW: Contact Us Today
+----------
+OLD: How Did You Hear About Us?
+NEW: How Did You Hear About Us?*
+----------

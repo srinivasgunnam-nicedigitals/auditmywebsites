@@ -33,10 +33,21 @@ function showToast(message, type = 'info') {
         // Check if Lucide is loaded
         const hasLucide = typeof lucide !== 'undefined';
 
+        // Handle object/array messages (for better error display of API responses)
+        let displayMessage = message;
+        if (typeof message === 'object' && message !== null) {
+            if (Array.isArray(message)) {
+                // If it's a FastAPI validation error detail array
+                displayMessage = message.map(err => err.msg || JSON.stringify(err)).join(', ');
+            } else {
+                displayMessage = message.detail || message.message || message.msg || JSON.stringify(message);
+            }
+        }
+
         toast.innerHTML = `
             <div class="flex items-center gap-3">
                 ${hasLucide ? `<i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i>` : ''}
-                <div class="text-sm font-medium tracking-wide">${message}</div>
+                <div class="text-sm font-medium tracking-wide">${displayMessage}</div>
             </div>
             <button class="text-slate-500 hover:text-white transition-colors text-xl leading-none">&times;</button>
         `;
@@ -52,9 +63,19 @@ function showToast(message, type = 'info') {
             info: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4F7CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M10 14V10M10 6h.01"/></svg>'
         };
 
+        // Handle object/array messages
+        let displayMessage = message;
+        if (typeof message === 'object' && message !== null) {
+            if (Array.isArray(message)) {
+                displayMessage = message.map(err => err.msg || JSON.stringify(err)).join(', ');
+            } else {
+                displayMessage = message.detail || message.message || message.msg || JSON.stringify(message);
+            }
+        }
+
         toast.innerHTML = `
             <div class="toast-icon">${icons[type] || icons.info}</div>
-            <div class="toast-content">${message}</div>
+            <div class="toast-content">${displayMessage}</div>
             <div class="toast-close">×</div>
         `;
 

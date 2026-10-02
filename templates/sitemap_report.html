@@ -2,10 +2,16 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audit My Websites - XML Sitemap Report</title>
-    <link rel="stylesheet" href="/static/css/styles.css?v=2.13">
+    <title>Site Tester - XML Sitemap Report</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.56">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -272,11 +278,88 @@
             text-decoration: none;
             font-size: 0.9rem;
         }
+
+        /* Responsive Sitemap Report */
+        @media (max-width: 1024px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .internal-links-metrics {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .seo-insights-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .category-distribution {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 1.5rem;
+            }
+
+            .report-header-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-repeat,
+            .btn-csv {
+                justify-content: center;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .internal-links-metrics {
+                grid-template-columns: 1fr !important;
+            }
+
+            .category-distribution {
+                grid-template-columns: 1fr !important;
+            }
+
+            .link-analysis-controls {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+
+            .link-analysis-controls input,
+            .link-analysis-controls select {
+                width: 100% !important;
+            }
+
+            .report-header-title-container {
+                width: 100%;
+            }
+
+            .link-analysis-header {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 1.5rem;
+            }
+        }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
 </head>
 
 <body>
 
+    <div class="sidebar-overlay"></div>
     <!-- Sidebar -->
     <aside class="sidebar">
         <!-- ... sidebar content remains identical ... -->
@@ -293,6 +376,55 @@
             <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
             <span>Dashboard</span>
         </a>
+
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
+                    Tools</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/platform/image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item active">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
         <div class="nav-section-title collapsible">
             <div class="nav-section-main"><img src="/static/svg/audit-history.svg" class="icon" alt=""><span>Audit
                     History</span></div>
@@ -329,52 +461,13 @@
             </a>
             <a href="/platform/history?type=meta-tags" class="nav-item">
                 <img src="/static/svg/metatags.svg" class="icon" alt="">
-                <span>Meta Tags</span>
-            </a>
-            <a href="/platform/history?type=sitemap" class="nav-item">
-                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
-                <span>XML Sitemaps</span>
-            </a>
-        </div>
-        <div class="nav-section-title collapsible">
-            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
-                    Tools</span></div>
-            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-        </div>
-
-        <div class="nav-submenu open">
-            <a href="/platform/device-lab" class="nav-item">
-                <img src="/static/svg/device-lab.svg" class="icon" alt="">
-                <span>Live Responsive</span>
-            </a>
-            <a href="/platform/static" class="nav-item">
-                <img src="/static/svg/static-audit.svg" class="icon" alt="">
-                <span>Responsive Audit</span>
-            </a>
-            <a href="/platform/performance" class="nav-item">
-                <img src="/static/svg/performance.svg" class="icon" alt="">
-                <span>Speed Test</span>
-            </a>
-            <a href="/platform/accessibility" class="nav-item">
-                <img src="/static/svg/accessibility.svg" class="icon" alt="">
-                <span>Accessibility</span>
-            </a>
-            <a href="/phone-audit" class="nav-item">
-                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
-                <span>CTA Audit</span>
-            </a>
-            <a href="/h1-audit" class="nav-item">
-                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
-                <span>H1 Tags</span>
-            </a>
-            <a href="/scan/meta-tags" class="nav-item">
-                <img src="/static/svg/metatags.svg" class="icon" alt="">
                 <span>Compare Meta Tags</span>
             </a>
-            <a href="/scan/xml-sitemaps" class="nav-item active">
+            <a href="/platform/history?type=image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/platform/history?type=sitemap" class="nav-item">
                 <img src="/static/svg/sitemaps.svg" class="icon" alt="">
                 <span>XML Sitemaps</span>
             </a>
@@ -385,7 +478,7 @@
             <img src="/static/svg/settings.svg" class="icon" alt="">
             <span>Settings</span>
         </a>
-        <a href="#" onclick="showLogoutModal(event)" class="nav-item">
+        <a href="/logout" class="nav-item">
             <img src="/static/svg/logout.svg" class="icon" alt="">
             <span>Logout</span>
         </a>
@@ -395,8 +488,18 @@
     <main class="main-content">
         <!-- Header -->
         <header class="header">
-
-            <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header"
+            <button class="mobile-menu-toggle">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back</span>
+            </a>
+            <a href="/logout" class="logout-btn-header"
                 style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
 
                 <img src="/static/svg/logout.svg" alt="Logout" width="20" height="20">
@@ -412,17 +515,18 @@
 
             {% set first_result = results[0] if results else None %}
             <div class="page-header">
-                <div class="page-title">
-                    <h1>{{ session.project_name }} Report - {{ first_result.url if first_result else 'No Data' }}</h1>
+                <div class="report-header-title-container" style="display: flex; align-items: center; gap: 1rem;">
+                    <h1 style="margin: 0;" title="{{ session.name }}">{{ session.name|truncate(23, killwords=True,
+                        leeway=0) }}</h1>
 
                 </div>
                 <div class="report-header-actions">
-                    <button class="btn-repeat" onclick="restartSession('{{ session_id }}', 'sitemap')">
-                        <img src="/static/svg/repeat-icon.svg" alt="" width="16" height="16">
+                    <button class="btn-repeat" onclick="window.location.href='/scan/xml-sitemaps'">
+                        <img src="/static/svg/restart.svg" alt="" width="16" height="16">
                         Repeat Audit
                     </button>
                     <a href="/api/export/sitemap/{{ first_result.session_id }}" class="btn-csv">
-                        <img src="/static/svg/repeat-icon.svg" alt="" width="20" height="20">
+                        <img src="/static/svg/export.svg" alt="" width="20" height="20">
                         Export Results as CSV
                     </a>
                 </div>
@@ -461,244 +565,701 @@
 
             <div class="section-grid">
                 <div class="section-card">
-                    <div class="section-title">Sitemap Structure</div>
+                    <div class="section-title">Robots.txt Content</div>
                     <div class="tree-container">
-                        {% if first_result and first_result.reachability_sample %}
-                        {% set tree = first_result.reachability_sample|from_json %}
-                        <div class="tree-node">
-                            <div class="tree-root">Root: <span style="font-weight: 400; color: #d1d1d1;">{{
-                                    first_result.url }}</span></div>
-                            {% for url, status in tree.items() %}
-                            <div class="tree-branch">
-                                <span
-                                    class="badge-nested {{ 'badge-success' if status == 200 or status == 'sitemap' else 'badge-danger' if status != 'sitemap' else '' }}">{{
-                                    status }}</span>
-                                <span>{{ url }}</span>
-                            </div>
-                            {% endfor %}
-                        </div>
+                        {% if first_result and first_result.robots_txt_content %}
+                        <pre
+                            style="background: #1a1a1a; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5; color: #d1d1d1; margin: 0;">{{ first_result.robots_txt_content }}</pre>
                         {% else %}
-                        <div class="empty-state">No reachability data detected.</div>
+                        <div class="empty-state">robots.txt structure must come here</div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="section-card">
-                    <div class="section-title">Full Metadata</div>
-                    <div class="data-table-container" style="min-height: 200px; display: flex; flex-direction: column;">
-                        <table class="data-table">
+                    <div class="section-title">Sitemap Hierarchy</div>
+                    <div class="data-table-container table-responsive"
+                        style="min-height: 200px; display: flex; flex-direction: column;">
+                        {% if first_result and first_result.sitemap_hierarchy %}
+                        {% set hierarchy = first_result.sitemap_hierarchy|from_json %}
+                        <table class="data-table responsive-table" style="table-layout: fixed; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th style="width: 70%;">Sample URL</th>
-                                    <th>Status</th>
+                                    <th style="width: 5%;">No.</th>
+                                    <th style="width: 50%;">Sitemap URL</th>
+                                    <th style="width: 15%;">Type</th>
+                                    <th style="width: 10%;">Count</th>
+                                    <th style="width: 20%;">Last Modified</th>
                                 </tr>
                             </thead>
-                            <tbody id="sitemap-table-body">
-                                {% if first_result and first_result.reachability_sample %}
-                                {% set sample = first_result.reachability_sample|from_json %}
-                                {% for url, status in sample.items() %}
-                                <tr class="sitemap-row-item">
-                                    <td>{{ url }}</td>
-                                    <td
-                                        class="{{ 'text-success' if status == 200 or status == 'sitemap' else 'text-danger' }}">
-                                        {{ status }}
+                            <tbody>
+                                {% for item in hierarchy %}
+                                <tr class="sitemap-hierarchy-row">
+                                    <td data-label="No.">{{ loop.index }}</td>
+                                    <td data-label="Sitemap URL" style="min-width: 0;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%;">
+                                            <span
+                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; flex-grow: 1; min-width: 0;"
+                                                title="{{ item.url }}">{{ item.url
+                                                }}</span>
+                                            <button class="btn-ghost"
+                                                onclick="viewSitemapContent('{{ item.url }}', '{{ item.type }}')"
+                                                title="View Sitemap Content" style="padding: 0.25rem;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-eye">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
+                                    <td data-label="Type">
+                                        {% if item.type == 'Sitemap Index' %}
+                                        <span
+                                            style="background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; display: inline-block; width: fit-content; text-align: center;">Index</span>
+                                        {% elif item.type == 'Sitemap' %}
+                                        <span
+                                            style="background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; display: inline-block; width: fit-content; text-align: center;">Sitemap</span>
+                                        {% else %}
+                                        <span
+                                            style="background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; display: inline-block; width: fit-content; text-align: center;">Error</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Count">{{ item.count }}</td>
+                                    <td data-label="Last Modified"
+                                        style="font-size: 0.75rem; color: #888; word-break: break-word; overflow-wrap: anywhere;">
+                                        {{
+                                        item.last_mod }}</td>
                                 </tr>
                                 {% endfor %}
-                                {% else %}
-                                <tr>
-                                    <td colspan="2" class="empty-state">No reachability metadata available.</td>
-                                </tr>
-                                {% endif %}
                             </tbody>
                         </table>
+
+                        <div class="pagination-container" style="padding: 1rem;">
+                            <div class="pagination" id="sitemap-hierarchy-pagination-controls">
+                                <!-- JS generated pagination -->
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="empty-state">No sitemap hierarchy data available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Internal Links Analysis -->
+            <div class="section-card" style="margin-top: 2rem;">
+                <div class="section-title">Internal Links Analysis</div>
+                <div class="data-table-container table-responsive"
+                    style="min-height: 200px; display: flex; flex-direction: column;">
+                    {% if first_result and first_result.internal_links %}
+                    {% set links_data = first_result.internal_links|from_json %}
+                    <div class="internal-links-metrics"
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div
+                            style="background: #1a1a1a; padding: 1rem; border-radius: 0.5rem; border: 1px solid #2a2a2a;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 0.5rem;">Total Links</div>
+                            <div style="color: #fff; font-size: 1.5rem; font-weight: 600;">{{ links_data.total }}</div>
+                        </div>
+                        <div
+                            style="background: #1a1a1a; padding: 1rem; border-radius: 0.5rem; border: 1px solid #2a2a2a;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 0.5rem;">Internal Links</div>
+                            <div style="color: #10b981; font-size: 1.5rem; font-weight: 600;">{{ links_data.internal }}
+                            </div>
+                            <div style="color: #666; font-size: 0.75rem; margin-top: 0.25rem;">{{ ((links_data.internal
+                                / links_data.total * 100)|round(1)) if links_data.total > 0 else 0 }}%</div>
+                        </div>
+                        <div
+                            style="background: #1a1a1a; padding: 1rem; border-radius: 0.5rem; border: 1px solid #2a2a2a;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 0.5rem;">External Links</div>
+                            <div style="color: #ef4444; font-size: 1.5rem; font-weight: 600;">{{ links_data.external }}
+                            </div>
+                            <div style="color: #666; font-size: 0.75rem; margin-top: 0.25rem;">{{ ((links_data.external
+                                / links_data.total * 100)|round(1)) if links_data.total > 0 else 0 }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- All Internal Links Found -->
+                    {% if links_data.all_internal_links is defined and links_data.all_internal_links|length > 0 %}
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #fff; font-size: 1rem; margin-bottom: 0.75rem;">All Internal Links Found ({{
+                            links_data.all_internal_links|length }})</h4>
+                    </div>
+                    <table class="data-table responsive-table" style="margin-bottom: 2rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">No.</th>
+                                <th style="width: 90%;">URL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links_data.all_internal_links %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td style="word-break: break-all; color: #10b981;">{{ link }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+
+                    {% if links_data.external_domains and links_data.external_domains|length > 0 %}
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="color: #fff; font-size: 1rem; margin-bottom: 0.75rem;">External Domains Found</h4>
+                    </div>
+                    <table class="data-table responsive-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Rank</th>
+                                <th style="width: 60%;">Domain</th>
+                                <th style="width: 30%;">Link Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for domain, count in links_data.external_domains.items() %}
+                            <tr>
+                                <td data-label="Rank">{{ loop.index }}</td>
+                                <td data-label="Domain" style="word-break: break-all;">{{ domain }}</td>
+                                <td data-label="Link Count"><span
+                                        style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem;">{{
+                                        count }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div
+                        style="background: #1a1a1a; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #2a2a2a; text-align: center;">
+                        <div style="color: #10b981; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">
+                            &check; All
+                            Links are Internal</div>
+                        <div style="color: #888; font-size: 0.875rem;">No external domains detected in the sitemap</div>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="empty-state">No internal links data available</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Link Analysis Report -->
+            {% if first_result and first_result.link_details %}
+            {% set link_details = first_result.link_details|from_json %}
+            {% set seo_insights = links_data.seo_insights if links_data and links_data.seo_insights else {} %}
+
+            <!-- SEO Insights Panel -->
+            <div class="section-card"
+                style="margin-top: 2rem; background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(245, 158, 11, 0.05)); border-color: rgba(239, 68, 68, 0.2);">
+                <div class="section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <img src="/static/svg/issues_found.svg" alt="" width="24" height="24">
+                    SEO Insights & Recommendations
+                </div>
+
+                <div class="seo-insights-grid"
+                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <!-- Missing Alt Text -->
+                    <div
+                        style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                            <span style="font-size: 1.5rem;">⚠️</span>
+                            <div>
+                                <div style="color: #ef4444; font-weight: 600; font-size: 0.9rem;">Missing Alt Text</div>
+                                <div style="color: #888; font-size: 0.75rem;">Image links without alt attributes</div>
+                            </div>
+                        </div>
+                        <div style="color: #fff; font-size: 2rem; font-weight: 700;">{{ seo_insights.missing_alt_count
+                            or 0 }}</div>
+                        {% if seo_insights.missing_alt_count and seo_insights.missing_alt_count > 0 %}
+                        <div style="color: #ef4444; font-size: 0.75rem; margin-top: 0.5rem;">🔴 Critical SEO
+                            Issue</div>
+                        {% else %}
+                        <div style="color: #10b981; font-size: 0.75rem; margin-top: 0.5rem;">&check; All images have alt
+                            text
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Duplicate Anchors -->
+                    <div
+                        style="background: rgba(245, 158, 11, 0.1); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                            <span style="font-size: 1.5rem;">⚡</span>
+                            <div>
+                                <div style="color: #f59e0b; font-weight: 600; font-size: 0.9rem;">Duplicate Anchors
+                                </div>
+                                <div style="color: #888; font-size: 0.75rem;">Same text pointing to different URLs</div>
+                            </div>
+                        </div>
+                        <div style="color: #fff; font-size: 2rem; font-weight: 700;">{{
+                            seo_insights.duplicate_anchors|length if seo_insights.duplicate_anchors else 0 }}</div>
+                        {% if seo_insights.duplicate_anchors and seo_insights.duplicate_anchors|length > 0 %}
+                        <div style="color: #f59e0b; font-size: 0.75rem; margin-top: 0.5rem;">⚠️ May confuse
+                            search
+                            engines</div>
+                        {% else %}
+                        <div style="color: #10b981; font-size: 0.75rem; margin-top: 0.5rem;">&check; No duplicate
+                            anchors
+                            found</div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="pagination-container">
-                    <div class="pagination" id="pagination-controls">
+                <!-- Category Distribution -->
+                {% if seo_insights.category_distribution %}
+                <div style="margin-top: 1rem;">
+                    <h4 style="color: #fff; font-size: 0.9rem; margin-bottom: 0.75rem;">Link Category Distribution</h4>
+                    <div class="category-distribution"
+                        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+                        <div
+                            style="background: rgba(79, 124, 255, 0.1); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                            <div style="color: #4f7cff; font-size: 1.25rem; font-weight: 600;">{{
+                                seo_insights.category_distribution.navigation or 0 }}</div>
+                            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">Navigation</div>
+                        </div>
+                        <div
+                            style="background: rgba(16, 185, 129, 0.1); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                            <div style="color: #10b981; font-size: 1.25rem; font-weight: 600;">{{
+                                seo_insights.category_distribution.content or 0 }}</div>
+                            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">Content</div>
+                        </div>
+                        <div
+                            style="background: rgba(245, 158, 11, 0.1); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                            <div style="color: #f59e0b; font-size: 1.25rem; font-weight: 600;">{{
+                                seo_insights.category_distribution.cta or 0 }}</div>
+                            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">CTA</div>
+                        </div>
+                        <div
+                            style="background: rgba(139, 92, 246, 0.1); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                            <div style="color: #8b5cf6; font-size: 1.25rem; font-weight: 600;">{{
+                                seo_insights.category_distribution.footer or 0 }}</div>
+                            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">Footer</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Link Analysis Table -->
+            <div class="section-card" style="margin-top: 2rem;">
+                <div class="link-analysis-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div class="section-title" style="margin-bottom: 0;">Link Analysis Report</div>
+                    <div class="link-analysis-controls" style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="link-type-filter"
+                            style="background: #1a1a1a; border: 1px solid #2a2a2a; color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem;">
+                            <option value="all">All Types</option>
+                            <option value="internal">Internal Only</option>
+                            <option value="external">External Only</option>
+                        </select>
+                        <select id="link-category-filter"
+                            style="background: #1a1a1a; border: 1px solid #2a2a2a; color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem;">
+                            <option value="all">All Categories</option>
+                            <option value="navigation">Navigation</option>
+                            <option value="content">Content</option>
+                            <option value="cta">CTA</option>
+                            <option value="footer">Footer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="data-table-container table-responsive custom-scrollbar"
+                    style="max-height: 600px; overflow-y: auto;">
+                    <table class="data-table responsive-table" id="link-analysis-table">
+                        <thead style="position: sticky; top: 0; background: #0a0a0a; z-index: 10;">
+                            <tr>
+                                <th style="width: 5%;">No.</th>
+                                <th style="width: 25%;">Source URL</th>
+                                <th style="width: 25%;">Target URL</th>
+                                <th style="width: 20%;">Anchor Text</th>
+                                <th style="width: 10%;">Anchor Type</th>
+                                <th style="width: 8%;">Link Type</th>
+                                <th style="width: 7%;">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="link-table-body">
+                            {% for link in link_details %}
+                            <tr class="link-analysis-row" data-link-type="{{ link.link_type }}"
+                                data-category="{{ link.category }}"
+                                data-search="{{ (link.source_url + ' ' + link.target_url + ' ' + link.anchor_text)|lower }}">
+                                <td data-label="No.">{{ loop.index }}</td>
+                                <td data-label="Source URL"
+                                    style="word-break: break-all; font-size: 0.75rem; color: #888;">{{
+                                    link.source_url|truncate(50) }}</td>
+                                <td data-label="Target URL" style="word-break: break-all; font-size: 0.75rem;">
+                                    {% if link.link_type == 'internal' %}
+                                    <a href="{{ link.target_url }}" target="_blank"
+                                        style="color: #10b981; text-decoration: none;">
+                                        {{ link.target_url|truncate(50) }}
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ link.target_url }}" target="_blank"
+                                        style="color: #ef4444; text-decoration: none;">
+                                        {{ link.target_url|truncate(50) }}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Anchor Text" style="font-size: 0.875rem;">
+                                    {{ link.anchor_text|truncate(40) }}
+                                    {% if not link.has_alt and link.anchor_type in ['image', 'mixed'] %}
+                                    <span style="color: #ef4444; font-size: 0.7rem; margin-left: 0.25rem;"
+                                        title="Missing alt text">⚠️</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Anchor Type">
+                                    {% if link.anchor_type == 'text' %}
+                                    <span
+                                        style="background: rgba(79, 124, 255, 0.2); color: #4f7cff; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">Text</span>
+                                    {% elif link.anchor_type == 'image' %}
+                                    <span
+                                        style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">Image</span>
+                                    {% else %}
+                                    <span
+                                        style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">Mixed</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Link Type">
+                                    {% if link.link_type == 'internal' %}
+                                    <span style="color: #10b981; font-weight: 600; font-size: 0.75rem;">Internal</span>
+                                    {% else %}
+                                    <span style="color: #ef4444; font-weight: 600; font-size: 0.75rem;">External</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Category">
+                                    <span style="font-size: 0.75rem; text-transform: capitalize; color: #888;">{{
+                                        link.category }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-container" style="padding: 1.5rem;">
+                    <div class="pagination" id="link-analysis-pagination-controls">
                         <!-- JS generated pagination -->
                     </div>
                 </div>
 
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const rows = document.querySelectorAll('.sitemap-row-item');
-                        if (rows.length === 0) return;
 
-                        let currentPage = 1;
-                        const itemsPerPage = 10;
-                        const container = document.getElementById('pagination-controls');
-
-                        function renderPagination() {
-                            const totalPages = Math.ceil(rows.length / itemsPerPage);
-
-                            // Show/Hide rows
-                            rows.forEach((row, index) => {
-                                if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
-                                    row.style.display = 'table-row';
-                                } else {
-                                    row.style.display = 'none';
-                                }
-                            });
-
-                            updateControls(totalPages);
-                        }
-
-                        function updateControls(totalPages) {
-                            let html = '';
-                            // Prev
-                            html += `<button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" title="Previous">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="15 18 9 12 15 6"></polyline>
-                                        </svg>
-                                     </button>`;
-
-                            // Pages
-                            for (let i = 1; i <= totalPages; i++) {
-                                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-                                    html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-                                } else if (i === currentPage - 3 || i === currentPage + 3) {
-                                    html += `<span class="pagination-dots">...</span>`;
-                                }
-                            }
-
-                            // Next
-                            html += `<button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" title="Next">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                        </svg>
-                                     </button>`;
-
-                            container.innerHTML = html;
-                        }
-
-                        window.changePage = function (page) {
-                            if (page < 1 || page > Math.ceil(rows.length / itemsPerPage)) return;
-                            currentPage = page;
-                            renderPagination();
-                            document.querySelector('.data-table-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        };
-
-                        renderPagination();
-                    });
-                </script>
             </div>
-        </div>
+            {% endif %}
 
-        <!-- Issues Found -->
-        <div class="issues-bar">
-            <div class="issues-icon">
-                <img src="/static/svg/issues_found.svg" alt="" width="20" height="20">
-            </div>
-            <div class="issues-content">
-                <span class="issues-title">Issues & Discovery</span>
-                <ul class="issues-list">
-                    {% set errors = first_result.errors|from_json if first_result and first_result.errors else [] %}
-                    {% set warnings = first_result.warnings|from_json if first_result and first_result.warnings else
-                    [] %}
-                    {% if errors or warnings %}
-                    {% for issue in errors %}
-                    <li class="text-danger">{{ issue }}</li>
-                    {% endfor %}
-                    {% for issue in warnings %}
-                    <li class="text-warning">{{ issue }}</li>
-                    {% endfor %}
-                    {% else %}
-                    <li>No critical issues found.</li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-        <!-- Audit Progress Modal -->
-        <div id="audit-modal" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <span class="modal-close">×</span>
-                <div class="modal-header">
-                    <h3>Audit Progress</h3>
-                    <p class="modal-subtitle">The audit is currently running in the background.</p>
+            <!-- Issues Found -->
+
+            <div class="issues-bar">
+                <div class="issues-icon">
+                    <img src="/static/svg/issues_found.svg" alt="" width="20" height="20">
                 </div>
-                <div class="modal-body">
-                    <div class="audit-progress-container"
-                        style="display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                        <div class="audit-progress-bar" style="position: absolute; left: 0; height: 100%;">
-                        </div>
-                        <span class="audit-progress-text" style="position: relative; z-index: 1;">0%</span>
-                    </div>
-                    <div class="progress-status">Processing URL <span id="processed-url-count">0</span> of
-                        <span id="total-url-count">0</span>
-                    </div>
-                    <button class="stop-session-btn">
-                        <span class="stop-icon">✕</span>
-                        <span>Stop Session</span>
-                    </button>
-                    <a href="#" class="view-report-btn" style="display: none;">View Report →</a>
+                <div class="issues-content">
+                    <span class="issues-title">Issues & Discovery</span>
+                    <ul class="issues-list">
+                        {% set errors = first_result.errors|from_json if first_result and first_result.errors else [] %}
+                        {% set warnings = first_result.warnings|from_json if first_result and first_result.warnings else
+                        [] %}
+                        {% if errors or warnings %}
+                        {% for issue in errors %}
+                        <li class="text-danger">{{ issue }}</li>
+                        {% endfor %}
+                        {% for issue in warnings %}
+                        <li class="text-warning">{{ issue }}</li>
+                        {% endfor %}
+                        {% else %}
+                        <li>No critical issues found.</li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
-        </div>
-
-        <!-- Custom Confirmation Modal -->
-        <div id="confirm-modal" class="modal-overlay" style="display: none;">
-            <div class="modal-content" style="max-width: 400px;">
-                <div class="modal-header">
-                    <h3 id="confirm-title">Are you sure?</h3>
-                    <p id="confirm-message" class="modal-subtitle" style="margin-bottom: 2rem;">This action cannot
-                        be
-                        undone.</p>
-                </div>
-                <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: center;">
-                    <button id="confirm-cancel" class="btn btn-ghost" style="flex: 1;">Cancel</button>
-                    <button id="confirm-proceed" class="btn btn-primary"
-                        style="flex: 1; background-color: var(--primary-blue);">Confirm</button>
-                </div>
-            </div>
-        </div>
         </div>
     </main>
 
-    <script src="/static/js/main.js?v=2.14"></script>
-    <!-- Logout Confirmation Modal -->
-    <div id="logout-confirm-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="max-width: 400px; width: 100%;">
+    <script>
+        // Link Analysis Table Filtering and Search with Pagination
+        let currentLinkPage = 1;
+        const itemsPerPage = 10;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('link-search');
+            const typeFilter = document.getElementById('link-type-filter');
+            const categoryFilter = document.getElementById('link-category-filter');
+            const tableBody = document.getElementById('link-table-body');
+            const paginationControls = document.getElementById('link-analysis-pagination-controls');
+
+            if (!searchInput || !typeFilter || !categoryFilter || !tableBody) return;
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedType = typeFilter.value;
+                const selectedCategory = categoryFilter.value;
+                const rows = tableBody.querySelectorAll('.link-analysis-row');
+
+                let matchedRows = [];
+                rows.forEach(row => {
+                    const linkType = row.dataset.linkType;
+                    const category = row.dataset.category;
+                    const searchData = row.dataset.search || '';
+
+                    // Check filters
+                    const typeMatch = selectedType === 'all' || linkType === selectedType;
+                    const categoryMatch = selectedCategory === 'all' || category === selectedCategory;
+                    const searchMatch = searchTerm === '' || searchData.includes(searchTerm);
+
+                    if (typeMatch && categoryMatch && searchMatch) {
+                        matchedRows.push(row);
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                currentLinkPage = 1;
+                renderPagination(matchedRows);
+            }
+
+            function renderPagination(matchedRows) {
+                const totalPages = Math.ceil(matchedRows.length / itemsPerPage);
+
+                // Hide all first
+                matchedRows.forEach(row => row.style.display = 'none');
+
+                // Show items for current page
+                const start = (currentLinkPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pagedRows = matchedRows.slice(start, end);
+
+                pagedRows.forEach((row, index) => {
+                    row.style.display = '';
+                    // Update index number to reflect global position in matched results
+                    row.querySelector('td:first-child').textContent = start + index + 1;
+                });
+
+                updateControls(paginationControls, currentLinkPage, totalPages, (page) => {
+                    currentLinkPage = page;
+                    renderPagination(matchedRows);
+                });
+            }
+
+            // Initialization
+            filterTable();
+
+            // Attach event listeners
+            searchInput.addEventListener('input', filterTable);
+            typeFilter.addEventListener('change', filterTable);
+            categoryFilter.addEventListener('change', filterTable);
+        });
+
+        function updateControls(container, currentPage, totalPages, onPageChange) {
+            if (!container) return;
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            // Prev
+            html += `<button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" data-page="${currentPage - 1}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                     </button>`;
+
+            // Pages
+            let startPage = Math.max(1, currentPage - 1);
+            let endPage = Math.min(totalPages, currentPage + 1);
+            if (currentPage === 1 && totalPages >= 3) endPage = 3;
+            if (currentPage === totalPages && totalPages >= 3) startPage = totalPages - 2;
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+
+            // Next
+            html += `<button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" data-page="${currentPage + 1}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                     </button>`;
+
+            container.innerHTML = html;
+
+            container.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    const page = parseInt(btn.dataset.page);
+                    if (isNaN(page) || page < 1 || page > totalPages || page === currentPage) return;
+                    onPageChange(page);
+                };
+            });
+        }
+    </script>
+    <!-- Sitemap Content Modal -->
+    <div id="sitemap-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; text-align: left;">
+            <span class="modal-close" onclick="closeSitemapModal()">&times;</span>
             <div class="modal-header">
-                <h3>Confirm Logout</h3>
+                <h3 id="sitemap-modal-title">Sitemap Content</h3>
+                <p id="sitemap-modal-url"
+                    style="word-break: break-all; color: var(--primary-blue); margin-bottom: 1rem; font-size: 0.9rem;">
+                </p>
             </div>
-            <div class="modal-body">
-                <p style="color: #cbd5e1; margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
-                <div class="modal-actions"
-                    style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
-                    <button class="btn btn-secondary" onclick="closeLogoutModal()">Cancel</button>
-                    <a href="/logout" class="btn btn-primary"
-                        style="background-color: #EF4444; border-color: #EF4444;">Logout</a>
+
+            <div id="sitemap-modal-loading" style="text-align: center; padding: 2rem; display: none;">
+                <div style="color: var(--text-secondary);">Loading sitemap content...</div>
+            </div>
+
+            <div id="sitemap-modal-error"
+                style="text-align: center; padding: 2rem; display: none; color: var(--danger);">
+            </div>
+
+            <div id="sitemap-modal-body" class="custom-scrollbar"
+                style="max-height: 60vh; overflow-y: auto; display: none;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">No.</th>
+                            <th style="width: 70%;">Location</th>
+                            <th style="width: 20%;">Last Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sitemap-modal-list">
+                        <!-- Entries will be injected here -->
+                    </tbody>
+                </table>
+                <div class="pagination-container" style="padding: 1rem;">
+                    <div class="pagination" id="modal-pagination-controls">
+                        <!-- JS generated pagination -->
+                    </div>
                 </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+                <button class="btn btn-ghost" onclick="closeSitemapModal()">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        function showLogoutModal(e) {
-            if (e) e.preventDefault();
-            const modal = document.getElementById('logout-confirm-modal');
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+        // Sitemap Hierarchy Table Pagination
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('.sitemap-hierarchy-row');
+            if (rows.length <= 10) return; // Only show pagination if more than 10 rows
+
+            let currentPage = 1;
+            const itemsPerPage = 10;
+            const container = document.getElementById('sitemap-hierarchy-pagination-controls');
+
+            function renderPagination() {
+                const totalPages = Math.ceil(rows.length / itemsPerPage);
+
+                rows.forEach((row, index) => {
+                    if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                updateControls(container, currentPage, totalPages, (page) => {
+                    currentPage = page;
+                    renderPagination();
+                });
+            }
+
+            renderPagination();
+        });
+    </script>
+
+    <script>
+        // Sitemap Modal Logic
+        async function viewSitemapContent(url, type) {
+            const modal = document.getElementById('sitemap-modal');
+            const titleEl = document.getElementById('sitemap-modal-title');
+            const urlEl = document.getElementById('sitemap-modal-url');
+            const loadingEl = document.getElementById('sitemap-modal-loading');
+            const errorEl = document.getElementById('sitemap-modal-error');
+            const bodyEl = document.getElementById('sitemap-modal-body');
+            const listEl = document.getElementById('sitemap-modal-list');
+
+            // Reset state
+            modal.style.display = 'flex';
+            urlEl.textContent = url;
+            titleEl.textContent = type === 'Sitemap Index' ? 'Sitemap Index Content' : 'Sitemap Content';
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            bodyEl.style.display = 'none';
+            listEl.innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/sitemap/inspect?url=${encodeURIComponent(url)}`);
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.detail || 'Failed to fetch sitemap content');
+                }
+
+                const data = await response.json();
+
+                // Populate list with pagination
+                if (data.entries && data.entries.length > 0) {
+                    let currentModalPage = 1;
+                    const modalItemsPerPage = 10;
+                    const modalPaginationControls = document.getElementById('modal-pagination-controls');
+
+                    function renderModalPage() {
+                        listEl.innerHTML = '';
+                        const totalPages = Math.ceil(data.entries.length / modalItemsPerPage);
+                        const start = (currentModalPage - 1) * modalItemsPerPage;
+                        const end = start + modalItemsPerPage;
+                        const pagedEntries = data.entries.slice(start, end);
+
+                        pagedEntries.forEach((entry, index) => {
+                            const tr = document.createElement('tr');
+                            const loc = entry.loc;
+                            const lastmod = entry.lastmod;
+
+                            tr.innerHTML = `
+                                <td>${start + index + 1}</td>
+                                <td style="word-break: break-all;">
+                                    <a href="${loc}" target="_blank" style="color: var(--primary-blue); text-decoration: none;">
+                                        ${loc}
+                                    </a>
+                                </td>
+                                <td style="font-size: 0.85rem; color: var(--text-secondary);">${lastmod}</td>
+                            `;
+                            listEl.appendChild(tr);
+                        });
+
+                        updateControls(modalPaginationControls, currentModalPage, totalPages, (page) => {
+                            currentModalPage = page;
+                            renderModalPage();
+                        });
+                    }
+
+                    renderModalPage();
+                    bodyEl.style.display = 'block';
+                } else {
+                    errorEl.textContent = "No entries found in this sitemap.";
+                    errorEl.style.display = 'block';
+                }
+
+            } catch (err) {
+                console.error(err);
+                errorEl.textContent = "Error: " + err.message;
+                errorEl.style.display = 'block';
+            } finally {
+                loadingEl.style.display = 'none';
             }
         }
 
-        function closeLogoutModal() {
-            const modal = document.getElementById('logout-confirm-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
+        function closeSitemapModal() {
+            document.getElementById('sitemap-modal').style.display = 'none';
         }
 
-        window.addEventListener('click', function (e) {
-            const modal = document.getElementById('logout-confirm-modal');
-            if (e.target === modal) {
-                closeLogoutModal();
+        // Close on overlay click
+        document.getElementById('sitemap-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeSitemapModal();
             }
         });
     </script>
+    <script src="/static/js/main.js?v=2.23"></script>
 </body>
 
 </html>

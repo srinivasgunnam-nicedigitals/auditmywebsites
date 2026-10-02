@@ -1,0 +1,1531 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-by-Side Content Comparison</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 1.5rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .header h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; color: var(--primary); }
+        .urls { display: flex; gap: 2rem; font-size: 0.85rem; color: #64748b; }
+        
+        .diff-container { background: var(--card); border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+        .diff-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; table-layout: fixed; }
+        
+        .diff-table th { background: #f8fafc; padding: 0.75rem; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; }
+        .line-no { width: 40px; text-align: right; color: #94a3b8; padding-right: 10px; user-select: none; background: #f8fafc; border-right: 1px solid #e2e8f0; }
+        .content { padding-left: 10px; white-space: pre-wrap; word-break: break-all; vertical-align: top; padding-top: 4px; padding-bottom: 4px; }
+        
+        tr.equal .content { color: #475569; }
+        tr.added { background-color: #ecfdf5; }
+        tr.added .content { color: #065f46; }
+        tr.removed { background-color: #fef2f2; }
+        tr.removed .content { color: #991b1b; }
+        tr.modified { background-color: #fffbeb; }
+        tr.modified .content { color: #92400e; }
+        
+        .type-indicator { width: 4px; padding: 0; }
+        tr.added .type-indicator { background: var(--success); }
+        tr.removed .type-indicator { background: var(--danger); }
+        tr.modified .type-indicator { background: var(--warning); }
+        
+        .sticky-header { position: sticky; top: 0; z-index: 10; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Content Comparison Report</h1>
+            <div class="urls">
+                <div><strong>LIVE:</strong> https://mikeschaferlaw.com/aboutus/</div>
+                <div><strong>STAGING:</strong> https://rizemedia.net/mikeschaferlaw/aboutus/</div>
+                <div><strong>SIMILARITY:</strong> 33%</div>
+            </div>
+        </div>
+
+        <div class="diff-container">
+            <table class="diff-table">
+                <thead class="sticky-header">
+                    <tr>
+                        <th class="line-no">#</th>
+                        <th>Live Content</th>
+                        <th class="line-no">#</th>
+                        <th>Staging Content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr class="modified">
+                        <td class="line-no">1</td>
+                        <td class="content">Close Menu</td>
+                        <td class="line-no">1</td>
+                        <td class="content">×</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">2</td>
+                        <td class="content">Home</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">2</td>
+                        <td class="content">Practice Area</td>
+                        <td class="line-no">3</td>
+                        <td class="content">Practice areas</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">3</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">4</td>
+                        <td class="content">Personal Injury</td>
+                        <td class="line-no">4</td>
+                        <td class="content">Personal Injury Lawyer</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">5</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">6</td>
+                        <td class="content">Frankfort Injury Lawyer</td>
+                        <td class="line-no">5</td>
+                        <td class="content">Frankfort Personal Injury Lawyer</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">7</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">8</td>
+                        <td class="content">Frankfort Car Accident Lawyer</td>
+                        <td class="line-no">6</td>
+                        <td class="content">Frankfort Car Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">9</td>
+                        <td class="content">Jeffersontown Injury Lawyer</td>
+                        <td class="line-no">7</td>
+                        <td class="content">Jeffersontown Personal Injury Lawyer</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">10</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">11</td>
+                        <td class="content">Jeffersontown Car Accident Lawyer</td>
+                        <td class="line-no">8</td>
+                        <td class="content">Jeffersontown Car Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">12</td>
+                        <td class="content">Jeffersontown Truck Accident Lawyer</td>
+                        <td class="line-no">9</td>
+                        <td class="content">Jeffersontown Truck Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">13</td>
+                        <td class="content">Jeffersontown Motorcycle Accident Lawyer</td>
+                        <td class="line-no">10</td>
+                        <td class="content">Jeffersontown Motorcycle Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">14</td>
+                        <td class="content">Jeffersontown Slip and Fall Attorney</td>
+                        <td class="line-no">11</td>
+                        <td class="content">Jeffersontown Slip and Fall Attorney</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">15</td>
+                        <td class="content">Jeffersontown Wrongful Death Attorney</td>
+                        <td class="line-no">12</td>
+                        <td class="content">Jeffersontown Wrongful Death Attorney</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">16</td>
+                        <td class="content">Car Accident Lawyer</td>
+                        <td class="line-no">13</td>
+                        <td class="content">Car Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">17</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">18</td>
+                        <td class="content">DUI Accident Injury Attorney</td>
+                        <td class="line-no">14</td>
+                        <td class="content">DUI Accident Injury Attorney</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">19</td>
+                        <td class="content">Distracted Driver Accident Lawyer</td>
+                        <td class="line-no">15</td>
+                        <td class="content">Distracted Driver Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">20</td>
+                        <td class="content">Shepherdsville Car Accident Lawyer</td>
+                        <td class="line-no">16</td>
+                        <td class="content">Shepherdsville Car Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">21</td>
+                        <td class="content">Uber & Lyft Rideshare Accident Attorney</td>
+                        <td class="line-no">17</td>
+                        <td class="content">Uber & Lyft Rideshare Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">18</td>
+                        <td class="content">Uber Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">19</td>
+                        <td class="content">Lyft Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">22</td>
+                        <td class="content">Car Accident Settlements</td>
+                        <td class="line-no">20</td>
+                        <td class="content">Car Accident Settlements</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">23</td>
+                        <td class="content">Car Accident Lawsuits Process and Timeline</td>
+                        <td class="line-no">21</td>
+                        <td class="content">Car Accident Lawsuits Process and Timeline</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">24</td>
+                        <td class="content">Car Accident FAQs</td>
+                        <td class="line-no">22</td>
+                        <td class="content">Car Accident FAQs</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">23</td>
+                        <td class="content">Truck Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">25</td>
+                        <td class="content">Truck Accident Lawyers</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">26</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">27</td>
+                        <td class="content">Delivery Truck Accident</td>
+                        <td class="line-no">24</td>
+                        <td class="content">Delivery Truck Accidents</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">28</td>
+                        <td class="content">Wrongful Death And Fatal Accidents</td>
+                        <td class="line-no">25</td>
+                        <td class="content">Wrongful Death Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">29</td>
+                        <td class="content">Motorcycle Accidents</td>
+                        <td class="line-no">26</td>
+                        <td class="content">Motorcycle Accidents</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">30</td>
+                        <td class="content">Bicycle Accidents</td>
+                        <td class="line-no">27</td>
+                        <td class="content">Bicycle Accidents</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">31</td>
+                        <td class="content">Contingency Lawyer</td>
+                        <td class="line-no">28</td>
+                        <td class="content">Contingency Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">32</td>
+                        <td class="content">Pedestrian Accidents</td>
+                        <td class="line-no">29</td>
+                        <td class="content">Pedestrian Accidents</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">33</td>
+                        <td class="content">Dog Bites And Animal Attacks</td>
+                        <td class="line-no">30</td>
+                        <td class="content">Dog Bites And Animal Attacks</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">34</td>
+                        <td class="content">Slip And Fall Accidents</td>
+                        <td class="line-no">31</td>
+                        <td class="content">Slip and Fall Accidents</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">35</td>
+                        <td class="content">Nursing Home Abuse</td>
+                        <td class="line-no">32</td>
+                        <td class="content">Nursing Home Abuse</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">36</td>
+                        <td class="content">Sexual Assault Victims</td>
+                        <td class="line-no">33</td>
+                        <td class="content">Sexual Assault Victims</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">37</td>
+                        <td class="content">Traumatic Brain Injury</td>
+                        <td class="line-no">34</td>
+                        <td class="content">Traumatic Brain Injury</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">38</td>
+                        <td class="content">Negligent Security Lawyer</td>
+                        <td class="line-no">35</td>
+                        <td class="content">Negligent Security Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">39</td>
+                        <td class="content">Bus Accident Lawyer</td>
+                        <td class="line-no">36</td>
+                        <td class="content">Bus Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">40</td>
+                        <td class="content">Mold Litigation Lawyer</td>
+                        <td class="line-no">37</td>
+                        <td class="content">Mold Litigation Lawyer</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">41</td>
+                        <td class="content">Child Injury Attorneys</td>
+                        <td class="line-no">38</td>
+                        <td class="content">Child Injury Attorney</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">42</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">43</td>
+                        <td class="content">Child Injured in Car Accident</td>
+                        <td class="line-no">39</td>
+                        <td class="content">Child Injured in Car Accident</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">44</td>
+                        <td class="content">About</td>
+                        <td class="line-no">40</td>
+                        <td class="content">About</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">45</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">46</td>
+                        <td class="content">Why Choose Us?</td>
+                        <td class="line-no">41</td>
+                        <td class="content">Why Choose Us?</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">47</td>
+                        <td class="content">The Team</td>
+                        <td class="line-no">42</td>
+                        <td class="content">The Team</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">48</td>
+                        <td class="content">Michael Schafer</td>
+                        <td class="line-no">43</td>
+                        <td class="content">Michael Schafer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">44</td>
+                        <td class="content">Areas Served</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">49</td>
+                        <td class="content">Results</td>
+                        <td class="line-no">45</td>
+                        <td class="content">Results</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">50</td>
+                        <td class="content">Reviews</td>
+                        <td class="line-no">46</td>
+                        <td class="content">Reviews</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">51</td>
+                        <td class="content">Resources</td>
+                        <td class="line-no">47</td>
+                        <td class="content">Resources</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">48</td>
+                        <td class="content">Faqs</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">52</td>
+                        <td class="content">Show sub menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">53</td>
+                        <td class="content">FAQs</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">54</td>
+                        <td class="content">Video Library</td>
+                        <td class="line-no">49</td>
+                        <td class="content">Video Library</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">55</td>
+                        <td class="content">Wave Listens Videos</td>
+                        <td class="line-no">50</td>
+                        <td class="content">Wave Listens Videos</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">56</td>
+                        <td class="content">Free Books</td>
+                        <td class="line-no">51</td>
+                        <td class="content">Free Books</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">57</td>
+                        <td class="content">Press Releases</td>
+                        <td class="line-no">52</td>
+                        <td class="content">Press Releases</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">58</td>
+                        <td class="content">Scholarship</td>
+                        <td class="line-no">53</td>
+                        <td class="content">Scholarship</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">59</td>
+                        <td class="content">Accident Map</td>
+                        <td class="line-no">54</td>
+                        <td class="content">Accident Map</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">60</td>
+                        <td class="content">Blog</td>
+                        <td class="line-no">55</td>
+                        <td class="content">Blog</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">61</td>
+                        <td class="content">Contact</td>
+                        <td class="line-no">56</td>
+                        <td class="content">Contact</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">57</td>
+                        <td class="content">×</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">58</td>
+                        <td class="content">About Us</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">59</td>
+                        <td class="content">Home</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">60</td>
+                        <td class="content">/</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">61</td>
+                        <td class="content">About Us</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">62</td>
+                        <td class="content">Louisville Personal Injury Attorneys | The Schafer Law Office</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">63</td>
+                        <td class="content">Call Now for a Free Consultation</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">64</td>
+                        <td class="content">Menu</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">65</td>
+                        <td class="content">Directions</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">66</td>
+                        <td class="content">Email</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">67</td>
+                        <td class="content">Call</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">68</td>
+                        <td class="content">Skip to main content</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">69</td>
+                        <td class="content">/wp-content/uploads/2020/07/The_Schafer_Law_Office___Firm_Overview_h264_764x430-2.mp4</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">70</td>
+                        <td class="content">The</td>
+                        <td class="line-no">62</td>
+                        <td class="content">The</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">71</td>
+                        <td class="content">Schafer Law Office</td>
+                        <td class="line-no">63</td>
+                        <td class="content">Schafer Law Office</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">72</td>
+                        <td class="content">is located in Old Louisville and serves the community by assisting with their needs in relation to personal injury law.</td>
+                        <td class="line-no">64</td>
+                        <td class="content">is located in Old Louisville and serves the community by assisting with their needs in relation to personal injury law.</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">73</td>
+                        <td class="content">Mike Schafer</td>
+                        <td class="line-no">65</td>
+                        <td class="content">Mike Schafer</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">74</td>
+                        <td class="content">is “The Lawyer Who Wrote the Book” and alongside the staff at The Schafer Law Office, Louisville, KY, and the surrounding areas should feel like they have found their go-to personal injury practice.</td>
+                        <td class="line-no">66</td>
+                        <td class="content">is “The Lawyer Who Wrote the Book” and alongside the staff at The Schafer Law Office, Louisville, KY, and the surrounding areas should feel like they have found their go-to personal injury practice.</td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">75</td>
+                        <td class="content">(Esc)</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="removed">
+                        <td class="line-no">76</td>
+                        <td class="content">Search Website</td>
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">77</td>
+                        <td class="content">Search Website</td>
+                        <td class="line-no">67</td>
+                        <td class="content">Guiding You Through the Personal Injury Maze</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">68</td>
+                        <td class="content">Contact Us Today</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">69</td>
+                        <td class="content">Call Us Today</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">70</td>
+                        <td class="content">502-584-9511</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">71</td>
+                        <td class="content">Get Answers Today Free Consultation</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">72</td>
+                        <td class="content">Get a Free Case Review</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">73</td>
+                        <td class="content">Practice Areas</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">74</td>
+                        <td class="content">Car Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">75</td>
+                        <td class="content">DUI Accident Injury Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">76</td>
+                        <td class="content">Distracted Driver Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">77</td>
+                        <td class="content">Uber & Lyft Rideshare Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">78</td>
+                        <td class="content">Uber Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">79</td>
+                        <td class="content">Lyft Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">80</td>
+                        <td class="content">Car Accident Settlements</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">81</td>
+                        <td class="content">Child Injury Attorneys</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">82</td>
+                        <td class="content">Child Injured in Car Accident</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">83</td>
+                        <td class="content">Truck Accident Attorney</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">84</td>
+                        <td class="content">Delivery Truck Accident</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">85</td>
+                        <td class="content">Bus Accident Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">86</td>
+                        <td class="content">Motorcycle Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">87</td>
+                        <td class="content">Bicycle Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">88</td>
+                        <td class="content">Pedestrian Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">89</td>
+                        <td class="content">Wrongful Death Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">90</td>
+                        <td class="content">Traumatic Brain Injury</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">91</td>
+                        <td class="content">Dog Bites And Animal Attacks</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">92</td>
+                        <td class="content">Slip and Fall Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">93</td>
+                        <td class="content">Nursing Home Abuse</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">94</td>
+                        <td class="content">Sexual Assault Victims</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">95</td>
+                        <td class="content">Negligent Security Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">96</td>
+                        <td class="content">Mold Litigation Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">97</td>
+                        <td class="content">Contingency Lawyer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">98</td>
+                        <td class="content">Testimonials</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">99</td>
+                        <td class="content">VIDEO: What can I say, I like what you’ve done here</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">100</td>
+                        <td class="content">I Like What You’ve Done “I’m Jack McKay. I work for WLOU Radio. I’ve lived in Louisville here now for about six and a half years. For this particular case, I was rear-ended by a young fellow. I took a pretty good hit and I felt like my neck was…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">101</td>
+                        <td class="content">- Jack M</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">102</td>
+                        <td class="content">VIDEO: I was extremely pleased with the outcome</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">103</td>
+                        <td class="content">Extremely Pleased “I came to The Schafer Law Office a few years ago because I was hit in my vehicle and the whole right side of my car was damaged. Me and my girlfriend were injured. In fact, we both had to be hospitalized. It was a very unpleasant experience.…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">104</td>
+                        <td class="content">- Marrissa K</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">105</td>
+                        <td class="content">VIDEO: I’m very, very pleased</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">106</td>
+                        <td class="content">I’m Very Pleased “I got bitten by a dog, and the insurance adjuster, I felt, was not being truthful to me. As far as what I was entitled to and medical attention. I went online, and I found your website. I liked what I read, and you responded back to…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">107</td>
+                        <td class="content">- Shannon L.</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">108</td>
+                        <td class="content">VIDEO: I felt like I was dealing with family and friends</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">109</td>
+                        <td class="content">Dealing With Friends and Family “I had my good friend who lives right across the street from me, Willard D., refer me to you. Said you, you was the best. He had worked with you and I decided to call you. I was in a car accident off of Cane…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">110</td>
+                        <td class="content">- Bobby</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">111</td>
+                        <td class="content">Professional and Courteous!</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">112</td>
+                        <td class="content">The Schafer Law Office handled answering all questions and concerns well. Everyone that I came into contact with at the office was extremely professional and courteous. My husband passed away earlier this year and Leta mailed me a wonderful book and condolences. It is greatly appreciated! Quality service. Anytime I…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">113</td>
+                        <td class="content">- Kimberly T.</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">114</td>
+                        <td class="content">Case Results</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">115</td>
+                        <td class="content">$25,000</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">116</td>
+                        <td class="content">Car Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">117</td>
+                        <td class="content">Ran Stop Sign Results…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">118</td>
+                        <td class="content">$25,000</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">119</td>
+                        <td class="content">Car Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">120</td>
+                        <td class="content">Car Runs Red Light…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">121</td>
+                        <td class="content">$25,000</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">122</td>
+                        <td class="content">Child Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">123</td>
+                        <td class="content">Playground Accident</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">124</td>
+                        <td class="content">$25,000</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">125</td>
+                        <td class="content">Car Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">126</td>
+                        <td class="content">Chiropractor Suffers Neck Pain</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">127</td>
+                        <td class="content">$25,000</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">128</td>
+                        <td class="content">Car Accidents</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">129</td>
+                        <td class="content">Hit-And-Run Victim Makes Uninsured…</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">130</td>
+                        <td class="content">Free Book</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">131</td>
+                        <td class="content">The Kentucky Accident Book</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">132</td>
+                        <td class="content">What You Don’t Know About Buying Car Insurance Can Hurt You</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">133</td>
+                        <td class="content">The Family Survival Guide To A New Driver</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">134</td>
+                        <td class="content">Get Help Now</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">135</td>
+                        <td class="content">We are here for you. You are not alone</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">136</td>
+                        <td class="content">"</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">137</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">138</td>
+                        <td class="content">" indicates required fields</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">139</td>
+                        <td class="content">LinkedIn</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">140</td>
+                        <td class="content">This field is for validation purposes and should be left unchanged.</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">141</td>
+                        <td class="content">First Name*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">142</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">143</td>
+                        <td class="content">Last Name*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">144</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">145</td>
+                        <td class="content">Email</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">146</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">147</td>
+                        <td class="content">Phone</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">148</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">149</td>
+                        <td class="content">How Did You Hear About Us?*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">150</td>
+                        <td class="content">*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">151</td>
+                        <td class="content">How Did You Hear About Us?*</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">152</td>
+                        <td class="content">Internet</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">153</td>
+                        <td class="content">Radio</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">154</td>
+                        <td class="content">TV</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">155</td>
+                        <td class="content">Attorney</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">156</td>
+                        <td class="content">Previous Client</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">157</td>
+                        <td class="content">Other</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">158</td>
+                        <td class="content">Message</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">159</td>
+                        <td class="content">Louisville</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">160</td>
+                        <td class="content">Jeffersontown</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">161</td>
+                        <td class="content">Frankfort</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">162</td>
+                        <td class="content">Shepherdsville</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">163</td>
+                        <td class="content">Home</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">164</td>
+                        <td class="content">About</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">165</td>
+                        <td class="content">Practice areas</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">166</td>
+                        <td class="content">Results</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">167</td>
+                        <td class="content">Reviews</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">168</td>
+                        <td class="content">Blog</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">169</td>
+                        <td class="content">Contact</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">170</td>
+                        <td class="content">Office Location</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">171</td>
+                        <td class="content">1218 S 3rd St</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">172</td>
+                        <td class="content">Louisville, KY 40203</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">173</td>
+                        <td class="content">Directions</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">174</td>
+                        <td class="content">Follow Us</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">175</td>
+                        <td class="content">Facebook</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">176</td>
+                        <td class="content">linkedin</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">177</td>
+                        <td class="content">Twitter</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">178</td>
+                        <td class="content">Contact Us</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">179</td>
+                        <td class="content">502-584-9511</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">180</td>
+                        <td class="content">Copyright © 2026 The Schafer Law Office • All Rights Reserved.</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">181</td>
+                        <td class="content">Disclaimer</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">182</td>
+                        <td class="content">|</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">183</td>
+                        <td class="content">Site Map</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">184</td>
+                        <td class="content">|</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">185</td>
+                        <td class="content">Privacy Policy.</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">186</td>
+                        <td class="content">Digital Marketing By:</td>
+                    </tr>
+                    
+                    <tr class="added">
+                        <td class="line-no"></td>
+                        <td class="content"></td>
+                        <td class="line-no">187</td>
+                        <td class="content">*Images are obtained under license from Canva and other third-party stock image providers, with attribution included where required.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

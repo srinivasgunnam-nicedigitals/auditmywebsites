@@ -2,10 +2,16 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audit My Websites - Speed Test Audit</title>
-    <link rel="stylesheet" href="/static/css/styles.css?v=2.13">
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.52">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -99,7 +105,19 @@
             font-size: 13px;
             line-height: 16px;
         }
+
+        .section-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.5);
+            transition: all 0.3s ease;
+        }
+
+        .form-group, .upload-area {
+            transition: all 0.3s ease;
+        }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
 </head>
 
 <body>
@@ -120,6 +138,54 @@
             <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
             <span>Dashboard</span>
         </a>
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
+                    Tools</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item active">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/platform/image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
         <div class="nav-section-title collapsible">
             <div class="nav-section-main"><img src="/static/svg/audit-history.svg" class="icon" alt=""><span>Audit
                     History</span></div>
@@ -156,53 +222,13 @@
             </a>
             <a href="/platform/history?type=meta-tags" class="nav-item">
                 <img src="/static/svg/metatags.svg" class="icon" alt="">
-                <span>Meta Tags</span>
-            </a>
-            <a href="/platform/history?type=sitemap" class="nav-item">
-                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
-                <span>XML Sitemaps</span>
-            </a>
-        </div>
-
-        <div class="nav-section-title collapsible">
-            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
-                    Tools</span></div>
-            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-        </div>
-
-        <div class="nav-submenu open">
-            <a href="/platform/device-lab" class="nav-item">
-                <img src="/static/svg/device-lab.svg" class="icon" alt="">
-                <span>Live Responsive</span>
-            </a>
-            <a href="/platform/static" class="nav-item">
-                <img src="/static/svg/static-audit.svg" class="icon" alt="">
-                <span>Responsive Audit</span>
-            </a>
-            <a href="/platform/performance" class="nav-item active">
-                <img src="/static/svg/performance.svg" class="icon" alt="">
-                <span>Speed Test</span>
-            </a>
-            <a href="/platform/accessibility" class="nav-item">
-                <img src="/static/svg/accessibility.svg" class="icon" alt="">
-                <span>Accessibility</span>
-            </a>
-            <a href="/phone-audit" class="nav-item">
-                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
-                <span>CTA Audit</span>
-            </a>
-            <a href="/h1-audit" class="nav-item">
-                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
-                <span>H1 Tags</span>
-            </a>
-            <a href="/scan/meta-tags" class="nav-item">
-                <img src="/static/svg/metatags.svg" class="icon" alt="">
                 <span>Compare Meta Tags</span>
             </a>
-            <a href="/scan/xml-sitemaps" class="nav-item">
+            <a href="/platform/history?type=image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/platform/history?type=sitemap" class="nav-item">
                 <img src="/static/svg/sitemaps.svg" class="icon" alt="">
                 <span>XML Sitemaps</span>
             </a>
@@ -219,12 +245,33 @@
             <span>Logout</span>
         </a>
     </aside>
+    <div class="sidebar-overlay"></div>
 
     <!-- Main Content -->
     <main class="main-content">
         <!-- Header -->
         <header class="header">
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back</span>
+            </a>
 
+
+            {% if user %}
+            <div class="credits-display-header"
+                style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 124, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(79, 124, 255, 0.2);">
+                <span
+                    style="color: #64748B; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Credits</span>
+                <span style="color: #4F7CFF; font-weight: 700; font-size: 0.95rem;">{{ user.credits }}</span>
+            </div>
+            {% endif %}
             <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header"
                 style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
 
@@ -238,8 +285,9 @@
         <!-- Content Area -->
         <div class="content-area">
             <div class="page-header">
-                <div class="page-title">
-                    <h1>Speed Test</h1>
+                <div class="page-title" style="display: flex; align-items: center; gap: 1rem;">
+
+                    <h1 style="margin: 0;">Speed Test</h1>
                 </div>
                 <button class="view-history-btn" data-type="performance">
                     <img src="/static/svg/view-history.svg" alt="" width="20" height="20">
@@ -248,25 +296,32 @@
             </div>
 
             <div class="card">
-                <div class="form-group">
-                    <label class="form-label">Enter Project Name<span class="required">*</span></label>
-                    <input type="text" class="form-input" name="session_name" placeholder="e.g. Project Name">
+                <div class="input-split">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Enter Project Name<span class="required">*</span></label>
+                        <input type="text" class="form-input" name="session_name" id="session-name-input" placeholder="e.g. Project Name">
+                    </div>
+                    <div class="form-group" id="crawl-section" style="margin-bottom: 0;">
+                        <label class="form-label">Enter Website URL(Crawl Entire Site)</label>
+                        <input type="text" class="form-input" name="crawl_url" id="crawl-url-input" placeholder="https://example.com">
+                    </div>
                 </div>
 
                 <div class="input-split">
-                    <div class="form-group">
+                    <div class="form-group" id="upload-section">
                         <label class="form-label">Upload URLs</label>
                         <div class="upload-area" id="drop-zone">
                             <img src="/static/svg/browser.svg" alt="" width="24" height="24">
                             <div class="upload-text">Browse or Drag & Drop .txt file here</div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="manual-section">
                         <label class="form-label manual-label">Or Enter URLs Manually (one per line)</label>
-                        <textarea class="form-textarea" name="manual_urls" rows="6"
+                        <textarea class="form-textarea" name="manual_urls" id="manual-urls-input" rows="6"
                             placeholder="https://example.com&#10;https://example123.com"></textarea>
                     </div>
                 </div>
+
 
                 <div class="form-group">
                     <label class="form-label">Test Environment</label>
@@ -293,7 +348,6 @@
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn btn-ghost reset-btn">Reset</button>
                     <button class="btn btn-primary" style="min-width: 200px;">Start Speed Test Audit</button>
                 </div>
             </div>
@@ -327,25 +381,26 @@
             <a href="Speed Test_report.html" class="view-report-btn" id="view-report-btn" style="display: none;">View
                 Report</a>
         </div>
+    </div>
 
-        <!-- Custom Confirmation Modal -->
-        <div id="confirm-modal" class="modal-overlay" style="display: none;">
-            <div class="modal-content" style="max-width: 400px;">
-                <div class="modal-header">
-                    <h3 id="confirm-title">Are you sure?</h3>
-                    <p id="confirm-message" class="modal-subtitle" style="margin-bottom: 2rem;">This action cannot be
-                        undone.</p>
-                </div>
-                <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: center;">
-                    <button id="confirm-cancel" class="btn btn-ghost" style="flex: 1;">Cancel</button>
-                    <button id="confirm-proceed" class="btn btn-primary"
-                        style="flex: 1; background-color: var(--primary-blue);">Confirm</button>
-                </div>
+    <!-- Custom Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 id="confirm-title">Are you sure?</h3>
+                <p id="confirm-message" class="modal-subtitle" style="margin-bottom: 2rem;">This action cannot be
+                    undone.</p>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirm-cancel" class="btn btn-ghost" style="flex: 1;">Cancel</button>
+                <button id="confirm-proceed" class="btn btn-primary"
+                    style="flex: 1; background-color: var(--primary-blue);">Confirm</button>
             </div>
         </div>
     </div>
 
-    <script src="/static/js/main.js?v=2.14"></script>
+    <script src="/static/js/toast.js"></script>
+    <script src="/static/js/main.js?v=2.23"></script>
     <!-- Logout Confirmation Modal -->
     <div id="logout-confirm-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content" style="max-width: 400px; width: 100%;">
@@ -387,6 +442,84 @@
             if (e.target === modal) {
                 closeLogoutModal();
             }
+        });
+
+        // Mutual Exclusion for Scan Sections (Speed Test)
+        document.addEventListener('DOMContentLoaded', function() {
+            const crawlInput = document.getElementById('crawl-url-input');
+            const manualInput = document.getElementById('manual-urls-input');
+            const dropZone = document.getElementById('drop-zone');
+            
+            const crawlSection = document.getElementById('crawl-section');
+            const uploadSection = document.getElementById('upload-section');
+            const manualSection = document.getElementById('manual-section');
+
+            function updateMutualExclusion() {
+                const hasCrawl = crawlInput.value.trim() !== '';
+                const hasManual = manualInput.value.trim() !== '';
+                const hasUpload = dropZone.dataset.fileContent && dropZone.dataset.fileContent.trim() !== '';
+
+                // If Crawl is used -> disable Upload and Manual
+                if (hasCrawl) {
+                    uploadSection.classList.add('section-disabled');
+                    manualSection.classList.add('section-disabled');
+                    manualInput.disabled = true;
+                    // drop-zone doesn't have a 'disabled' attribute, but pointer-events: none in CSS handles it
+                } else {
+                    if (!hasManual && !hasUpload) {
+                        uploadSection.classList.remove('section-disabled');
+                        manualSection.classList.remove('section-disabled');
+                        manualInput.disabled = false;
+                    }
+                }
+
+                // If Manual is used -> disable Crawl and Upload
+                if (hasManual) {
+                    crawlSection.classList.add('section-disabled');
+                    uploadSection.classList.add('section-disabled');
+                    crawlInput.disabled = true;
+                } else {
+                    if (!hasCrawl && !hasUpload) {
+                        crawlSection.classList.remove('section-disabled');
+                        uploadSection.classList.remove('section-disabled');
+                        crawlInput.disabled = false;
+                    }
+                }
+
+                // If Upload is used -> disable Crawl and Manual
+                if (hasUpload) {
+                    crawlSection.classList.add('section-disabled');
+                    manualSection.classList.add('section-disabled');
+                    crawlInput.disabled = true;
+                    manualInput.disabled = true;
+                } else {
+                    if (!hasCrawl && !hasManual) {
+                        crawlSection.classList.remove('section-disabled');
+                        manualSection.classList.remove('section-disabled');
+                        crawlInput.disabled = false;
+                        manualInput.disabled = false;
+                    }
+                }
+            }
+
+            crawlInput.addEventListener('input', updateMutualExclusion);
+            manualInput.addEventListener('input', updateMutualExclusion);
+            
+            // Watch drop-zone for file-content changes (set by main.js)
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'data-file-content') {
+                        updateMutualExclusion();
+                    }
+                });
+            });
+
+            observer.observe(dropZone, {
+                attributes: true
+            });
+            
+            // Initial check
+            updateMutualExclusion();
         });
     </script>
 </body>

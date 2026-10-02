@@ -4,10 +4,10 @@ import ipaddress
 import httpx
 from typing import Optional, Tuple
 
-def is_safe_url(url: str) -> bool:
+def is_safe_url(url: str, allow_private: bool = False) -> bool:
     """
     Check if a URL is safe to fetch (prevents SSRF).
-    Blocks private IPs, loopback, and reserved ranges.
+    Blocks private IPs, loopback, and reserved ranges unless allow_private is True.
     """
     try:
         parsed = urlparse(url)
@@ -27,7 +27,7 @@ def is_safe_url(url: str) -> bool:
         ip = ipaddress.ip_address(ip_address)
 
         # Block loopback, private, link-local, and multicast addresses
-        if (ip.is_loopback or 
+        if not allow_private and (ip.is_loopback or 
             ip.is_private or 
             ip.is_link_local or 
             ip.is_multicast or 

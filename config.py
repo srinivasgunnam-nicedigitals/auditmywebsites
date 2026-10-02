@@ -41,6 +41,13 @@ class Settings(BaseSettings):
     max_concurrent_audits: int = 5
     playwright_timeout_ms: int = 90000
     
+    # SMTP Configuration
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: Optional[str] = None
+    smtp_password: Optional[str] = None
+    contact_recipients: str = "akashniceinteractive@gmail.com"
+    
     # Logging
     log_level: str = "INFO"
     

@@ -55,48 +55,191 @@ function restoreSidebarState() {
 // Call restore immediately
 restoreSidebarState();
 
-// Use delegation
-document.addEventListener('click', (e) => {
-    // Find closest header if clicked
-    const header = e.target.closest('.nav-section-title.collapsible');
-    if (!header) return;
+function highlightSidebarByPath() {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    console.log('Highlighting Sidebar for:', path, search);
 
-    // Find the next sibling which should be the submenu
-    const submenu = header.nextElementSibling;
-    if (submenu && submenu.classList.contains('nav-submenu')) {
-        // Toggle logic
-        const isOpen = header.classList.toggle('open');
-        submenu.classList.toggle('open');
+    // Remove active class from all items
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-        // CSS handles height, but we can help it if needed
-        if (isOpen) {
-            submenu.style.maxHeight = '500px';
-            submenu.style.opacity = '1';
-        } else {
-            submenu.style.maxHeight = '0';
-            submenu.style.opacity = '0';
+    let targetItem = null;
+
+    // Define mapping of paths to sidebar links
+    const mappings = [
+        { pattern: /^\/platform\/dashboard/, selector: 'a[href="/platform/dashboard"]' },
+
+        // Audit Tools (Scan/Input pages)
+        { pattern: /^\/scan\/xml-sitemaps/, selector: 'a[href="/scan/xml-sitemaps"]' },
+        { pattern: /^\/phone-audit/, selector: 'a[href="/phone-audit"]' },
+        { pattern: /^\/h1-audit/, selector: 'a[href="/h1-audit"]' },
+        { pattern: /^\/scan\/meta-tags/, selector: 'a[href="/scan/meta-tags"]' },
+        { pattern: /^\/platform\/image-alt/, selector: 'a[href="/platform/image-alt"]' },
+        { pattern: /^\/platform\/device-lab/, selector: 'a[href="/platform/device-lab"]' },
+        { pattern: /^\/platform\/static/, selector: 'a[href="/platform/static"]' },
+        { pattern: /^\/platform\/performance/, selector: 'a[href="/platform/performance"]' },
+        { pattern: /^\/platform\/accessibility/, selector: 'a[href="/platform/accessibility"]' },
+
+        // Results -> Audit History mapping
+        { pattern: /^\/results\/sitemap/, selector: 'a[href="/platform/history?type=sitemap"]' },
+        { pattern: /^\/results\/phone/, selector: 'a[href="/platform/history?type=phone"]' },
+        { pattern: /^\/results\/h1/, selector: 'a[href="/platform/history?type=h1"]' },
+        { pattern: /^\/results\/meta-tags/, selector: 'a[href="/platform/history?type=meta-tags"]' },
+        { pattern: /^\/results\/image-alt/, selector: 'a[href="/platform/history?type=image-alt"]' },
+        { pattern: /^\/results\/static/, selector: 'a[href="/platform/history?type=static"]' },
+        { pattern: /^\/results\/performance/, selector: 'a[href="/platform/history?type=performance"]' },
+        { pattern: /^\/results\/accessibility/, selector: 'a[href="/platform/history?type=accessibility"]' },
+
+        // History filters
+        { pattern: /^\/platform\/history/, selector: 'a[href^="/platform/history"]', matchQuery: true },
+
+        { pattern: /^\/platform\/settings/, selector: 'a[href="/platform/settings"]' }
+    ];
+
+    for (const mapping of mappings) {
+        if (mapping.pattern.test(path)) {
+            if (mapping.matchQuery && search) {
+                // Parse URL parameters to extract 'type'
+                const urlParams = new URLSearchParams(search);
+                const typeParam = urlParams.get('type');
+
+                if (typeParam && typeParam !== 'all') {
+                    const exactMatch = document.querySelector(`a[href="/platform/history?type=${typeParam}"]`);
+                    if (exactMatch) {
+                        targetItem = exactMatch;
+                        break;
+                    }
+                } else {
+                    const allAuditsMatch = document.querySelector(`a[href="/platform/history"]`);
+                    if (allAuditsMatch) {
+                        targetItem = allAuditsMatch;
+                        break;
+                    }
+                }
+            }
+            targetItem = document.querySelector(mapping.selector);
+            if (targetItem) break;
         }
+    }
 
-        saveSidebarState();
+    if (targetItem) {
+        targetItem.classList.add('active');
+
+        // Ensure parent section is open
+        const submenu = targetItem.closest('.nav-submenu');
+        if (submenu) {
+            const header = submenu.previousElementSibling;
+            if (header && header.classList.contains('nav-section-title') && header.classList.contains('collapsible')) {
+                // Enforce accordion: Close all OTHER open submenus
+                document.querySelectorAll('.nav-section-title.collapsible.open').forEach(openHeader => {
+                    if (openHeader !== header) {
+                        openHeader.classList.remove('open');
+                        const openSubmenu = openHeader.nextElementSibling;
+                        if (openSubmenu && openSubmenu.classList.contains('nav-submenu')) {
+                            openSubmenu.classList.remove('open');
+                            openSubmenu.style.maxHeight = '0';
+                            openSubmenu.style.opacity = '0';
+                        }
+                    }
+                });
+
+                if (!header.classList.contains('open')) {
+                    header.classList.add('open');
+                    submenu.classList.add('open');
+                    submenu.style.maxHeight = '500px';
+                    submenu.style.opacity = '1';
+                    saveSidebarState();
+                }
+            }
+        }
+    }
+}
+
+// --- Global Click Handlers (Delegation) ---
+document.addEventListener('click', (e) => {
+    // 1. Sidebar Collapsible Toggle
+    const header = e.target.closest('.nav-section-title.collapsible');
+    if (header) {
+        const submenu = header.nextElementSibling;
+        if (submenu && submenu.classList.contains('nav-submenu')) {
+            // ACCORDION LOGIC: Close all OTHER open submenus
+            document.querySelectorAll('.nav-section-title.collapsible.open').forEach(openHeader => {
+                if (openHeader !== header) {
+                    openHeader.classList.remove('open');
+                    const openSubmenu = openHeader.nextElementSibling;
+                    if (openSubmenu && openSubmenu.classList.contains('nav-submenu')) {
+                        openSubmenu.classList.remove('open');
+                        openSubmenu.style.maxHeight = '0';
+                        openSubmenu.style.opacity = '0';
+                    }
+                }
+            });
+
+            // Toggle logic for the CLICKED submenu
+            const isOpen = header.classList.toggle('open');
+            submenu.classList.toggle('open');
+
+            if (isOpen) {
+                submenu.style.maxHeight = '500px';
+                submenu.style.opacity = '1';
+            } else {
+                submenu.style.maxHeight = '0';
+                submenu.style.opacity = '0';
+            }
+            saveSidebarState();
+        }
+        return;
+    }
+
+    // 2. View History Buttons
+    const historyBtn = e.target.closest('.view-history-btn');
+    if (historyBtn) {
+        const type = historyBtn.dataset.type;
+        if (type) {
+            window.location.href = `/platform/history?type=${type}`;
+        }
+        return;
+    }
+
+    // 3. Close Multiselect Dropdowns Click Outside
+    const isMultiselectClick = e.target.closest('.custom-multiselect') || e.target.closest('.tags-input');
+    if (!isMultiselectClick) {
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
     }
 });
 
+// Use Delegation for Sidebar Toggles (handled above)
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Highlight sidebar based on current URL
+    highlightSidebarByPath();
+
     // --- State Management ---
     let currentSessionId = null;
     let pollInterval = null;
+    let currentAuditUrlCount = 0;
 
     // --- Sidebar Collapsible Logic ---
     // --- Helper: Get Current Audit Type ---
     function getAuditType() {
         const path = window.location.pathname;
-        if (path.includes('platform/dashboard') || path.includes('/platform/static')) return 'static';
-        if (path.includes('platform/performance')) return 'performance';
-        if (path.includes('platform/accessibility')) return 'accessibility';
-        if (path.includes('phone-audit')) return 'phone';
-        if (path.includes('h1-audit')) return 'h1';
-        if (path.includes('scan/meta-tags')) return 'meta-tags';
-        if (path.includes('scan/xml-sitemaps')) return 'sitemap';
+        if (path.includes('/platform/dashboard')) return 'static';
+        if (path.includes('/platform/static')) return 'static';
+        if (path.includes('/platform/performance')) return 'performance';
+        if (path.includes('/platform/accessibility')) return 'accessibility';
+        if (path.includes('/platform/h1') || path.includes('/h1-audit')) return 'h1';
+        if (path.includes('/platform/sitemap') || path.includes('/scan/xml-sitemaps')) return 'sitemap';
+        if (path.includes('/platform/meta-tags') || path.includes('/scan/meta-tags')) return 'meta-tags';
+        if (path.includes('/platform/image-alt')) return 'image-alt';
+        if (path.includes('/phone-audit')) return 'phone';
+
+        // Final fallback based on specific keywords in path
+        if (path.includes('h1')) return 'h1';
+        if (path.includes('sitemap')) return 'sitemap';
+        if (path.includes('meta')) return 'meta-tags';
+
         return 'static'; // Default
     }
 
@@ -143,10 +286,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = await file.text();
                 // Store file content in a hidden attribute or a global variable
                 dropZone.dataset.fileContent = text;
+
+                // Change the SVG icon to a file-uploaded checkmark icon
+                const iconEl = dropZone.querySelector('img');
+                if (iconEl) {
+                    iconEl.outerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-success-icon">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <polyline points="9 15 11 17 15 13"></polyline>
+                    </svg>`;
+                }
+
+                // Update the text to show filename
                 const uploadText = dropZone.querySelector('.upload-text');
                 if (uploadText) {
                     uploadText.textContent = file.name;
-                    uploadText.style.color = '#fff';
+                    uploadText.style.color = '#00C48C';
+                    uploadText.style.fontWeight = '500';
+                }
+
+                // Add a success border style to the drop zone
+                dropZone.style.borderColor = '#00C48C';
+                dropZone.style.backgroundColor = 'rgba(0, 196, 140, 0.05)';
+
+                // Show a toast notification
+                if (typeof showToast === 'function') {
+                    showToast(`File "${file.name}" uploaded successfully`, 'success');
                 }
             }
         }
@@ -235,6 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const singleUrlInput = document.querySelector('[name="url"]');
         const liveInput = document.querySelector('[name="live_url"]');
         const stagingInput = document.querySelector('[name="staging_url"]');
+        const crawlInput = document.querySelector('[name="crawl_url"]');
+        const isCrawlSite = document.querySelector('[name="crawl_site"]:checked') !== null;
 
         let urls = [];
         if (textarea) {
@@ -246,18 +413,42 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add Live/Staging URLs if present
         if (liveInput && liveInput.value.trim()) urls.push(liveInput.value.trim());
         if (stagingInput && stagingInput.value.trim()) urls.push(stagingInput.value.trim());
+        if (crawlInput && crawlInput.value.trim()) urls.push(crawlInput.value.trim());
 
         if (dropZone && dropZone.dataset.fileContent) {
             const fileUrls = dropZone.dataset.fileContent.split('\n').filter(u => u.trim());
             urls = [...urls, ...fileUrls];
         }
 
-        if (urls.length === 0 && type !== 'sitemap') {
-            await window.showAlert('URLs Required', 'Please provide at least one URL before starting the audit.');
-            if (textarea) highlightError(textarea, 'Enter correct url');
-            else if (singleUrlInput) highlightError(singleUrlInput, 'Enter correct url');
-            else if (liveInput) highlightError(liveInput, 'Enter correct url');
+        if (urls.length === 0) {
+            if (type === 'sitemap') {
+                if (singleUrlInput) highlightError(singleUrlInput, 'Enter Page URL');
+                showToast('Please provide a URL to scan', 'error');
+            } else {
+                await window.showAlert('URLs Required', 'Please provide at least one URL before starting the audit.');
+                if (textarea) highlightError(textarea, 'Enter correct url');
+                else if (singleUrlInput) highlightError(singleUrlInput, 'Enter correct url');
+                else if (liveInput) highlightError(liveInput, 'Enter correct url');
+            }
             return;
+        }
+
+        // Image Alt & Meta Tags explicitly require either comparison URLs OR manual URLs
+        if (type === 'image-alt' || type === 'meta-tags') {
+            const hasManual = urls.length > 0 && !liveInput && !stagingInput; // If we only have textarea
+            const hasLive = liveInput && liveInput.value.trim() !== '';
+            const hasStaging = stagingInput && stagingInput.value.trim() !== '';
+            
+            // If manual URLs are provided via textarea (which 'urls' would contain if parsed)
+            const manualTextarea = document.querySelector('[name="manual_urls"]');
+            const manualUrlsCount = manualTextarea ? manualTextarea.value.split('\n').filter(u => u.trim()).length : 0;
+
+            if (manualUrlsCount === 0 && (!hasLive || !hasStaging)) {
+                if (!hasLive && liveInput) highlightError(liveInput, 'Enter Live Site URL');
+                if (!hasStaging && stagingInput) highlightError(stagingInput, 'Enter Staging Site URL');
+                showToast('Please enter URLs for comparison or manual audit', 'error');
+                return;
+            }
         }
 
         // Validate URLs
@@ -330,6 +521,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check stagingInput if exists
         if (stagingInput && !validateInput(stagingInput)) return;
 
+        // Check crawlInput if exists
+        if (crawlInput && !validateInput(crawlInput)) return;
+
         // Collect Multi-selects
         const getSelected = (id) => {
             const container = document.getElementById(id);
@@ -363,9 +557,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Explicitly append live/staging fields for Meta comparison
-        if (type === 'meta-tags' && liveInput && stagingInput) {
+        if ((type === 'meta-tags' || type === 'image-alt') && liveInput && stagingInput) {
             formData.append('live_url', normalizeUrl(liveInput.value.trim()));
             formData.append('staging_url', normalizeUrl(stagingInput.value.trim()));
+        }
+
+        if (type === 'image-alt' && isCrawlSite) {
+            formData.append('crawl_site', 'true');
+        }
+
+        if (isCrawlSite) {
+            formData.append('crawl_site', 'true');
+        }
+
+        if (crawlInput && crawlInput.value.trim()) {
+            formData.append('crawl_url', normalizeUrl(crawlInput.value.trim()));
         }
 
         let endpoint = `/upload/${type}`;
@@ -382,8 +588,9 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('browsers', JSON.stringify(browsers));
             formData.append('resolutions', JSON.stringify(resolutions));
         } else if (type === 'performance') {
-            const activeEnv = document.querySelector('.env-option.active');
-            formData.append('strategy', activeEnv ? activeEnv.dataset.env : 'desktop');
+            const activeEnvs = Array.from(document.querySelectorAll('.env-option.active'));
+            const strategies = activeEnvs.length > 0 ? activeEnvs.map(opt => opt.dataset.env) : ['desktop'];
+            formData.append('strategies', JSON.stringify(strategies));
         } else if (type === 'dynamic') {
             const browserList = browsers.length ? browsers : ['Chrome'];
             const resList = resolutions.length ? resolutions : ['1920x1080'];
@@ -419,16 +626,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
 
-            if (!response.ok) throw new Error('Failed to start audit');
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (response.status === 403 || (errorData.error && errorData.error.toLowerCase().includes('credits'))) {
+                    window.showAlert('Credits Exhausted', 'Your credits are finished. Please top up to continue.');
+                } else {
+                    showToast(errorData.error || 'Failed to start audit', 'error');
+                }
+                return;
+            }
             const data = await response.json();
+
+            // Low Credit Popup logic
+            if (data.low_credits) {
+                window.showAlert('Low Credits Warning', 'Your credit balance is low (50 or below). Please top up soon to avoid interruption.');
+            }
+
             // Backend returns 'session' for static/dynamic/h1/phone, but checks might vary.
             // Using fallback to be safe.
             currentSessionId = data.session || data.session_id;
+            currentAuditUrlCount = normalizedUrls.length;
 
             // Calculate expected total for immediate UI feedback
             let expectedTotal = 0;
             if (type === 'static') {
                 expectedTotal = urls.length * browsers.length * resolutions.length;
+            } else if (type === 'meta-tags' && isCrawlSite) {
+                expectedTotal = 1; // Will be updated by backend during crawl
             } else {
                 expectedTotal = urls.length;
             }
@@ -469,32 +693,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const total = data.total || data.total_expected || 1; // Fallback to 1 to avoid div by zero
                 const percent = Math.min(100, Math.floor((data.completed / total) * 100)) || 0;
-
-                if (progressBar) progressBar.style.width = `${percent}%`;
-                if (progressText) progressText.textContent = `${percent}%`;
-
-                // Update counts specifically to avoid messing up the text layout using strict ID checks
+                
+                // Define these early for use in all status blocks
                 const processedSpan = document.getElementById('processed-url-count');
                 const totalSpan = document.getElementById('total-url-count');
                 const statusElement = document.querySelector('.progress-status');
 
-                if (statusElement) statusElement.style.visibility = 'visible';
+                if (data.status && data.status.startsWith('crawling:')) {
+                    // Crawling Phase
+                    const currentUrl = data.status.split('crawling:')[1];
+                    if (subtitle) subtitle.textContent = `Crawling: ${currentUrl}`;
+                    // Show indeterminate or just count
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.classList.add('indeterminate'); // Optional: Add CSS for striped animation if desired
+                    }
+                    if (progressText) progressText.textContent = `Found ${data.completed} pages`;
 
-                if (processedSpan && totalSpan) {
-                    processedSpan.textContent = data.completed;
-                    totalSpan.textContent = total;
-                } else if (processedCount) {
-                    // Fallback for other layouts (phone, generic) if they differ
-                    processedCount.textContent = `Processed ${data.completed} of ${total}`;
+                    if (processedSpan && totalSpan) {
+                        processedSpan.textContent = data.completed;
+                        totalSpan.textContent = "???";
+                    }
+                } else {
+                    if (subtitle && !subtitle.textContent.includes('completed')) {
+                        subtitle.textContent = 'Audit is running in the background...';
+                    }
+                    if (progressBar) progressBar.classList.remove('indeterminate');
+
+                    if (progressBar) progressBar.style.width = `${percent}%`;
+                    if (progressText) progressText.textContent = `${percent}%`;
+
+                    // Update UI visibility
+                    if (statusElement) statusElement.style.visibility = 'visible';
+
+                    if (processedSpan && totalSpan) {
+                        processedSpan.textContent = data.completed;
+                        totalSpan.textContent = total;
+                    } else if (processedCount) {
+                        // Fallback for other layouts (phone, generic) if they differ
+                        processedCount.textContent = `Processed ${data.completed} of ${total}`;
+                    }
                 }
 
-                if (data.status === 'completed' || percent >= 100) {
+                if (data.status === 'completed' || (percent >= 100 && data.status && !data.status.startsWith('crawling') && data.status !== 'running')) {
                     clearInterval(pollInterval);
                     onAuditComplete(type, sessionId);
                 } else if (data.status === 'error') {
                     clearInterval(pollInterval);
                     showToast('An error occurred during the audit.', 'error');
                     if (auditModal) auditModal.style.display = 'none';
+                } else if (data.status && data.status.includes('credits exhausted')) {
+                    clearInterval(pollInterval);
+                    if (auditModal) auditModal.style.display = 'none';
+                    window.showAlert('Credits Exhausted', 'Your credits are finished. Please top up to continue.');
                 }
             } catch (err) {
                 console.error('Polling error:', err);
@@ -503,7 +754,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onAuditComplete(type, sessionId) {
-        if (progressBar) progressBar.classList.add('success');
+        if (progressBar) {
+            progressBar.style.width = '100%';
+            progressBar.classList.add('success');
+        }
         if (progressContainer) progressContainer.classList.add('success');
         if (progressText) progressText.textContent = '100%';
         if (stopBtn) stopBtn.style.display = 'none';
@@ -512,6 +766,19 @@ document.addEventListener('DOMContentLoaded', () => {
             viewReportBtn.href = `/results/${type}/${sessionId}`;
         }
         if (subtitle) subtitle.textContent = 'Audit completed successfully!';
+
+        // Change "Processing URL X of Y" → "Processed X URLs"
+        const statusElement = document.querySelector('.progress-status');
+        if (statusElement) {
+            const totalSpan = document.getElementById('total-url-count');
+            const totalTasks = totalSpan ? totalSpan.textContent : '';
+            
+            if (type === 'static' || type === 'dynamic') {
+                statusElement.innerHTML = `Processed <strong>${currentAuditUrlCount}</strong> URL${currentAuditUrlCount == 1 ? '' : 's'} (${totalTasks} screenshots)`;
+            } else {
+                statusElement.innerHTML = `Processed <strong>${totalTasks}</strong> URL${totalTasks == 1 ? '' : 's'}`;
+            }
+        }
     }
 
     // --- Start Audit Buttons ---
@@ -607,35 +874,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
             if (pollInterval) clearInterval(pollInterval);
-            // Redirect to audit history
+            // If on a history page, just reload to stay on the same page
+            if (window.location.pathname.includes('/platform/history')) {
+                window.location.reload();
+                return;
+            }
+            // Otherwise redirect to audit history
             const type = getAuditType();
             window.location.href = `/platform/history?type=${type}`;
         });
     }
 
-    // --- Reset Form ---
-    const resetBtn = document.querySelector('.reset-btn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', async () => {
-            if (await window.showConfirm('Reset Form?', 'Are you sure you want to reset all fields?')) {
-                document.querySelectorAll('.form-input, .form-textarea').forEach(i => i.value = '');
-                if (dropZone) {
-                    delete dropZone.dataset.fileContent;
-                    const uploadText = dropZone.querySelector('.upload-text');
-                    if (uploadText) uploadText.textContent = 'Browse or Drag & Drop .txt file here';
-                }
-                document.querySelectorAll('.tag').forEach(t => t.remove());
-                document.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected'));
-            }
-        });
-    }
 
     // --- Environment Selection (Speed Test) ---
     document.body.addEventListener('click', (e) => {
         const option = e.target.closest('.env-option');
         if (option) {
-            document.querySelectorAll('.env-option').forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
+            const type = getAuditType();
+            if (type === 'performance') {
+                // Toggle for multi-select
+                option.classList.toggle('active');
+
+                // Ensure at least one is always selected? 
+                // Alternatively, let them unselect all and fallback in startAudit
+            } else {
+                // Radio behavior for others if any
+                document.querySelectorAll('.env-option').forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            }
         }
     });
 
@@ -645,16 +911,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.querySelector('.main-content');
 
     if (sidebarToggle && sidebar && mainContent) {
+        // Restore collapse state on load
+        const isCurrentlyCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (isCurrentlyCollapsed) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('sidebar-collapsed');
+        }
+
+        // --- IMPORTANT: Clear the preload state to reveal labels/logo ---
+        document.documentElement.classList.remove('sidebar-collapsed-preload');
+
         sidebarToggle.addEventListener('click', () => {
             const isCollapsed = sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('sidebar-collapsed');
             localStorage.setItem('sidebarCollapsed', isCollapsed);
         });
 
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            sidebar.classList.add('collapsed');
-            mainContent.classList.add('sidebar-collapsed');
+        // --- Mobile Menu Logic ---
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+        if (mobileToggle && sidebarOverlay) {
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('mobile-open');
+                sidebarOverlay.classList.toggle('active');
+            });
+
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            });
+
+            // Auto-close on link click (mobile/tablet)
+            sidebar.querySelectorAll('.nav-item').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('mobile-open');
+                        sidebarOverlay.classList.remove('active');
+                    }
+                });
+            });
         }
+
+        // Close mobile menu on Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('mobile-open');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+            }
+        });
     }
 
     // --- Global Multi-select ---
@@ -1012,9 +1317,66 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        const updateDeviceUrls = (url) => {
+        // Track the last URL that credits were deducted for
+        let lastCreditedUrl = null;
+
+        // Helper to deduct a credit for a new URL
+        const deductCreditForUrl = async (url) => {
+            if (url === lastCreditedUrl) return true; // Same URL, no charge
+            try {
+                const response = await fetch('/api/live/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+                if (!response.ok) {
+                    const data = await response.json();
+                    if (response.status === 403 || (data.error && data.error.toLowerCase().includes('credits'))) {
+                        window.showAlert('Credits Exhausted', 'Your credits are finished. Please top up to continue.');
+                    } else if (typeof showToast === 'function') {
+                        showToast(data.error || 'Insufficient credits', 'error');
+                    } else {
+                        alert(data.error || 'Insufficient credits');
+                    }
+                    return false;
+                }
+                const data = await response.json();
+
+                // Low Credit Popup logic for Device Lab
+                if (data.low_credits) {
+                    window.showAlert('Low Credits Warning', 'Your credit balance is low (50 or below). Please top up soon to avoid interruption.');
+                }
+
+                lastCreditedUrl = url;
+                // Update credit display in header
+                const creditSpan = document.querySelector('.credits-display-header span:last-child');
+                if (creditSpan) {
+                    const currentCredits = parseInt(creditSpan.textContent);
+                    if (!isNaN(currentCredits)) {
+                        creditSpan.textContent = currentCredits - 1;
+                    }
+                }
+                return true;
+            } catch (err) {
+                console.error('Credit deduction error:', err);
+                return false;
+            }
+        };
+
+        const updateDeviceUrls = async (url) => {
             if (!url) return;
             if (!url.startsWith('http')) url = 'https://' + url;
+
+            // Only deduct credit if URL changed
+            const ok = await deductCreditForUrl(url);
+            if (!ok) return;
+
+            // Notify user of wait time for staging URLs
+            const isStaging = ['staging', 'stagging', 'preview', 'ourwebsitepreview'].some(keyword => url.toLowerCase().includes(keyword));
+            if (isStaging && typeof showToast === 'function') {
+                showToast("Staging URL detected - verifying security challenge. Please wait 15-20 seconds for the devices to load.", "info");
+            }
+
             const proxiedUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
             console.log('Loading proxied URL:', proxiedUrl);
             document.querySelectorAll('.device-frame').forEach(frame => {
@@ -1046,6 +1408,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.classList.add('active');
                 const isLandscape = btn.title === 'Landscape';
 
+                // Add landscape-mode class to container for CSS rules to pick up (important for mobile)
+                if (isLandscape) {
+                    deviceLabContainer.classList.add('landscape-mode');
+                } else {
+                    deviceLabContainer.classList.remove('landscape-mode');
+                }
+
                 document.querySelectorAll('.device-frame-wrapper').forEach(wrapper => {
                     const frame = wrapper.querySelector('.device-frame');
                     const span = wrapper.querySelector('.device-header span');
@@ -1062,6 +1431,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             [w, h] = [h, w];
                         }
 
+                        // Apply inline styles (mostly for desktop, CSS handles mobile)
                         frame.style.width = `${w}px`;
                         frame.style.height = `${h}px`;
                         span.textContent = span.textContent.replace(/\d+\s*x\s*\d+/, `${w} x ${h}`);
@@ -1071,12 +1441,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (addSizeBtn) {
-            addSizeBtn.addEventListener('click', () => {
+            addSizeBtn.addEventListener('click', async () => {
                 const w = widthInput.value || 375;
                 const h = heightInput.value || 667;
                 let url = urlInput.value || 'about:blank';
                 if (url !== 'about:blank') {
                     if (!url.startsWith('http')) url = 'https://' + url;
+                    // Deduct credit if URL changed
+                    const ok = await deductCreditForUrl(url);
+                    if (!ok) return;
                     url = `/api/proxy?url=${encodeURIComponent(url)}`;
                 }
 
@@ -1104,8 +1477,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (addAllToggle) {
-            addAllToggle.addEventListener('change', () => {
+            addAllToggle.addEventListener('change', async () => {
                 if (addAllToggle.checked) {
+                    let url = urlInput.value || 'about:blank';
+                    if (url !== 'about:blank') {
+                        if (!url.startsWith('http')) url = 'https://' + url;
+                        // Deduct credit once for all presets (only if URL changed)
+                        const ok = await deductCreditForUrl(url);
+                        if (!ok) {
+                            addAllToggle.checked = false;
+                            return;
+                        }
+                        url = `/api/proxy?url=${encodeURIComponent(url)}`;
+                    }
+
                     const presets = [
                         { name: 'iPhone SE', w: 375, h: 667, icon: 'phone-icon' },
                         { name: 'iPhone 14 Pro', w: 393, h: 852, icon: 'phone-icon' },
@@ -1116,15 +1501,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Reverse snapshots to maintain their relative order when prepending
                     presets.reverse().forEach(p => {
-                        let url = urlInput.value || 'about:blank';
-                        if (url !== 'about:blank') {
-                            if (!url.startsWith('http')) url = 'https://' + url;
-                            url = `/api/proxy?url=${encodeURIComponent(url)}`;
-                        }
-
                         const wrapper = document.createElement('div');
                         wrapper.className = 'device-frame-wrapper';
-                        wrapper.dataset.isPreset = "true"; // Tag as preset for removal
+                        wrapper.dataset.isPreset = "true";
                         wrapper.innerHTML = `
                             <div class="device-header">
                                 <img src="/static/svg/${p.icon}.svg" width="18" height="18">
@@ -1219,6 +1598,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             else if (path.includes('performance')) type = 'performance';
                             else if (path.includes('accessibility')) type = 'accessibility';
                             else if (path.includes('meta-tags')) type = 'meta-tags';
+                            else if (path.includes('image-alt')) type = 'image-alt';
                             else if (path.includes('sitemaps')) type = 'sitemap';
                             else if (path.includes('h1')) type = 'h1';
                             else if (path.includes('phone')) type = 'phone';
@@ -1234,34 +1614,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.reload();
                 }
             } else {
-                showToast('Failed to restart session.', 'error');
+                const errorData = await response.json();
+                if (response.status === 403 || (errorData.error && errorData.error.toLowerCase().includes('credits'))) {
+                    window.showAlert('Credits Exhausted', 'Your credits are finished. Please top up to continue.');
+                } else {
+                    showToast(errorData.error || 'Failed to restart session.', 'error');
+                }
             }
         } catch (error) {
             console.error('Restart error:', error);
             showToast('An error occurred while restarting.', 'error');
         }
     };
-
-
-
-    // --- Logout & View History Buttons ---
-    document.body.addEventListener('click', (e) => {
-
-        // Handle History
-        const historyBtn = e.target.closest('.view-history-btn');
-        if (historyBtn) {
-            const type = historyBtn.dataset.type;
-            if (type) {
-                window.location.href = `/platform/history?type=${type}`;
-            }
-        }
-
-        // --- Close Multiselect Dropdowns Click Outside ---
-        const isMultiselectClick = e.target.closest('.custom-multiselect');
-        if (!isMultiselectClick) {
-            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                menu.classList.remove('show');
-            });
-        }
-    });
 });

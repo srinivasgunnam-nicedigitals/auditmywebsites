@@ -1,0 +1,80 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/aboutus/
+Live:    https://mikeschaferlaw.com/aboutus/
+Date:    2026-03-17 16:21:44
+
+SUMMARY
+- Similarity Score: 33%
+- Added Lines:      91
+- Removed Lines:    86
+- Modified Lines:   6
+
+OBSERVATIONS
+- 📝 Moderate rewriting detected.
+- 💰 Pricing-related changes detected.
+- 📄 Meta Description updated.
+
+ADDED CONTENT (top 20)
++ (502) 584-9511
++ Hablamos Espanol
++ Practice Area
++ Personal Injury
++ Frankfort Injury Lawyer
++ Jeffersontown Injury Lawyer
++ Jeffersontown Car Accident Lawyer
++ Jeffersontown Motorcycle Accident Lawyer
++ Delivery Truck Accident
++ Slip And Fall Accidents
++ Free Consultation
++ About Us
++ /wp-content/uploads/2020/07/The_Schafer_Law_Office___Firm_Overview_h264_764x430-2.mp4
++ ── FOOTER ──
++ Resources
++ The Lawyer Who Wrote the Book
++ Here are some helpful articles, research studies, statistics and Kentucky accident resources to assist you in finding the right information you need. There are plenty of articles on a variety of subjects such as recalls, auto accident updates, forms, studies and press releases from The Schafer Law Office.
++ View Free Books
++ View all Resources
++ Contact Us
+
+REMOVED CONTENT (top 20)
+- English
+- Español
+- Get a Free Case Review
+- 502-584-9511
+- Home
+- Practice areas
+- Personal Injury Lawyer
+- Frankfort Personal Injury Lawyer
+- Jeffersontown Personal Injury Lawyer
+- Jeffersontown Car Accident Attorney
+- Jeffersontown Motorcycle Accident Attorney
+- Uber Accident Lawyer
+- Lyft Accident Lawyer
+- Delivery Truck Accidents
+- Slip and Fall Accidents
+- Areas Served
+- Contact
+- Search
+- ×
+- Search Website
+
+MODIFIED CONTENT (top 20)
+OLD: Truck Accident Attorney
+NEW: Truck Accident Lawyers
+----------
+OLD: Wrongful Death Lawyer
+NEW: Wrongful Death And Fatal Accidents
+----------
+OLD: Child Injury Attorney
+NEW: Child Injury Attorneys
+----------
+OLD: Faqs
+NEW: FAQs
+----------
+OLD: Truck Accident Attorney
+NEW: Frequently Asked Questions
+----------
+OLD: Delivery Truck Accident
+NEW: Delivery Truck Accidents
+----------

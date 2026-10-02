@@ -2,15 +2,44 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audit My Websites - Dashboard</title>
-    <link rel="stylesheet" href="/static/css/styles.css?v=2.13">
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.53">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap"
         rel="stylesheet">
+    <style>
+        .action-disabled {
+            opacity: 0.4 !important;
+            pointer-events: none;
+            cursor: not-allowed !important;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .is-running {
+            opacity: 0.6;
+        }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
 </head>
 
 <body>
@@ -31,51 +60,6 @@
             <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
             <span>Dashboard</span>
         </a>
-        <div class="nav-section-title collapsible">
-            <div class="nav-section-main"><img src="/static/svg/audit-history.svg" class="icon" alt=""><span>Audit
-                    History</span></div>
-            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-        </div>
-
-        <div class="nav-submenu">
-            <a href="/platform/history" class="nav-item">
-                <img src="/static/svg/view-history.svg" class="icon" alt="">
-                <span>All Audits</span>
-            </a>
-            <a href="/platform/history?type=static" class="nav-item">
-                <img src="/static/svg/static-audit.svg" class="icon" alt="">
-                <span>Responsive Audit</span>
-            </a>
-            <a href="/platform/history?type=performance" class="nav-item">
-                <img src="/static/svg/performance.svg" class="icon" alt="">
-                <span>Speed Test</span>
-            </a>
-            <a href="/platform/history?type=accessibility" class="nav-item">
-                <img src="/static/svg/accessibility.svg" class="icon" alt="">
-                <span>Accessibility</span>
-            </a>
-            <a href="/platform/history?type=phone" class="nav-item">
-                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
-                <span>CTA Audit</span>
-            </a>
-            <a href="/platform/history?type=h1" class="nav-item">
-                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
-                <span>H1 Tags</span>
-            </a>
-            <a href="/platform/history?type=meta-tags" class="nav-item">
-                <img src="/static/svg/metatags.svg" class="icon" alt="">
-                <span>Meta Tags</span>
-            </a>
-            <a href="/platform/history?type=sitemap" class="nav-item">
-                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
-                <span>XML Sitemaps</span>
-            </a>
-        </div>
-
-
         <div class="nav-section-title collapsible">
             <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit
                     Tools</span></div>
@@ -114,7 +98,61 @@
                 <img src="/static/svg/metatags.svg" class="icon" alt="">
                 <span>Compare Meta Tags</span>
             </a>
+
+            <a href="/platform/image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
             <a href="/scan/xml-sitemaps" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/audit-history.svg" class="icon" alt=""><span>Audit
+                    History</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/history" class="nav-item">
+                <img src="/static/svg/view-history.svg" class="icon" alt="">
+                <span>All Audits</span>
+            </a>
+            <a href="/platform/history?type=static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+
+            <a href="/platform/history?type=performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/history?type=accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/platform/history?type=phone" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/platform/history?type=h1" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/platform/history?type=meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/platform/history?type=image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/platform/history?type=sitemap" class="nav-item">
                 <img src="/static/svg/sitemaps.svg" class="icon" alt="">
                 <span>XML Sitemaps</span>
             </a>
@@ -130,11 +168,34 @@
             <span>Logout</span>
         </a>
     </aside>
+    <div class="sidebar-overlay"></div>
+
 
     <main class="main-content">
         <!-- Header -->
         <header class="header">
+            <button class="mobile-menu-toggle">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back</span>
+            </a>
 
+
+
+            {% if user %}
+            <div class="credits-display-header"
+                style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 124, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(79, 124, 255, 0.2);">
+                <span
+                    style="color: #64748B; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Credits</span>
+                <span style="color: #4F7CFF; font-weight: 700; font-size: 0.95rem;">{{ user.credits }}</span>
+            </div>
+            {% endif %}
             <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header"
                 style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
 
@@ -147,11 +208,13 @@
 
         <!-- Content Area -->
         <div class="content-area dashboard-content">
-            <div class="page-header">
-                <div class="page-title">
-                    <h1>Dashboard</h1>
-                    <div class="page-subtitle">Overview of recent audits, detected issues and testing activity.</div>
+            <div class="page-header" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div class="page-title" style="display: flex; align-items: center; gap: 1rem;">
+
+                    <h1 style="margin: 0;">Dashboard</h1>
                 </div>
+                <div class="page-subtitle" style="color: #8B949E; font-size: 0.95rem;">Overview of recent audits,
+                    detected issues and testing activity.</div>
             </div>
 
             <!-- Stats Grid -->
@@ -186,64 +249,65 @@
                         <img src="/static/svg/audits-completed.svg?v=2.2" alt="Completed">
                     </div>
                 </div>
-                <div class="stat-card danger">
-                    <div class="stat-content">
-                        <div class="stat-label">Critical Findings</div>
-                        <div class="stat-value">{{ critical_findings }}</div>
-                        <div class="stat-desc">Detected across recent audits</div>
-                    </div>
-                    <div class="stat-icon-wrapper warning">
-                        <img src="/static/svg/critical-findings.svg?v=2.2" alt="Critical">
-                    </div>
-                </div>
             </div>
 
             <!-- Quick Actions -->
-            <div class="section-title">Quick Actions</div>
+            <div class="section-title" style="display: flex; align-items: center; justify-content: space-between;">
+                <span>Quick Actions</span>
+            </div>
             <div class="quick-actions-grid">
-                <a href="/platform/static" class="action-card">
+                <a href="/platform/static" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/static-audit.svg" alt="">
                     </div>
                     <span>Responsive Audit</span>
                 </a>
-                <a href="/platform/performance" class="action-card">
+                <a href="/platform/performance"
+                    class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/performance.svg" alt="">
                     </div>
                     <span>Speed Test Audit</span>
                 </a>
-                <a href="/platform/accessibility" class="action-card">
+                <a href="/platform/accessibility"
+                    class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/accessibility.svg" alt="">
                     </div>
                     <span>Accessibility Audit</span>
                 </a>
-                <a href="/phone-audit" class="action-card">
+                <a href="/phone-audit" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/phone.svg" alt="">
                     </div>
                     <span>CTA Audit</span>
                 </a>
-                <a href="/h1-audit" class="action-card">
+                <a href="/h1-audit" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/h1-tags.svg" alt="">
                     </div>
                     <span>H1 Tags</span>
                 </a>
-                <a href="/scan/meta-tags" class="action-card">
+                <a href="/scan/meta-tags" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/meta-tags.svg" alt="">
                     </div>
                     <span>Compare Meta Tags</span>
                 </a>
-                <a href="/scan/xml-sitemaps" class="action-card">
+                <a href="/scan/xml-sitemaps" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/xml.svg" alt="">
                     </div>
                     <span>XML Sitemaps</span>
                 </a>
-                <a href="/platform/device-lab" class="action-card">
+
+                <a href="/platform/image-alt" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
+                    <div class="action-icon">
+                        <img src="/static/svg/image-alt.svg" alt="">
+                    </div>
+                    <span>Compare Image Alt</span>
+                </a>
+                <a href="/platform/device-lab" class="action-card {% if user.credits == 0 %}action-disabled{% endif %}">
                     <div class="action-icon">
                         <img src="/static/svg/quick-actions/device-lab.svg" alt="">
                     </div>
@@ -265,7 +329,7 @@
                     <div class="activity-table-container"
                         style="background: #171B26; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden;">
                         {% if recent_activity %}
-                        <table class="activity-table"
+                        <table class="activity-table responsive-table"
                             style="width: 100%; border-collapse: collapse; color: #fff; font-family: 'Outfit', sans-serif;">
                             <thead>
                                 <tr
@@ -292,32 +356,37 @@
                             </thead>
                             <tbody>
                                 {% for activity in recent_activity %}
-                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
-                                    <td style="padding: 1.25rem 1.5rem;">
-                                        <div style="font-weight: 500; font-size: 0.95rem;">{{ activity.name }}</div>
+                                <tr class="{% if activity.status == 'Running' or activity.status == 'Crawling' %}is-running{% endif %}"
+                                    style="border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+                                    <td style="padding: 1.25rem 1.5rem;" data-label="Project">
+                                        <div style="font-weight: 500; font-size: 0.95rem;" title="{{ activity.name }}">
+                                            {{ activity.name|truncate(23, killwords=True, leeway=0) }}</div>
                                     </td>
-                                    <td style="padding: 1.25rem 1.5rem; color: #E6EDF3;">
+                                    <td style="padding: 1.25rem 1.5rem; color: #E6EDF3;" data-label="Type">
                                         {{ activity.type }}
                                     </td>
-                                    <td style="padding: 1.25rem 1.5rem; text-align: center; color: #E6EDF3;">
+                                    <td style="padding: 1.25rem 1.5rem; text-align: center; color: #E6EDF3;"
+                                        data-label="URLs">
                                         {{ activity.url_count }}
                                     </td>
-                                    <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    <td style="padding: 1.25rem 1.5rem; text-align: center;" data-label="Status">
                                         {% if activity.status == 'Completed' %}
                                         <span style="color: #22c55e; font-weight: 500;">Completed</span>
                                         {% elif activity.status == 'Running' %}
                                         <span style="color: #3b82f6; font-weight: 500;">Running</span>
-                                        {% elif activity.status == 'Error' %}
-                                        <span style="color: #ef4444; font-weight: 500;">Error</span>
+                                        {% elif 'error' in activity.status.lower() %}
+                                        <span style="color: #ef4444; font-weight: 500;" title="{{ activity.status }}">{{
+                                            activity.status }}</span>
                                         {% else %}
                                         <span style="color: #9ca3af; font-weight: 500;">{{ activity.status }}</span>
                                         {% endif %}
                                     </td>
-                                    <td
-                                        style="padding: 1.25rem 1.5rem; text-align: center; color: #E6EDF3; font-size: 0.9rem;">
-                                        {{ activity.date }}
+                                    <td style="padding: 1.25rem 1.5rem; text-align: center; color: #E6EDF3; font-size: 0.9rem;"
+                                        data-label="Date & Time">
+                                        <span class="local-time" data-timestamp="{{ activity.created_at_iso }}">{{
+                                            activity.date }}</span>
                                     </td>
-                                    <td style="padding: 1.25rem 1.5rem; text-align: right;">
+                                    <td style="padding: 1.25rem 1.5rem; text-align: right;" data-label="Action">
                                         <div
                                             style="display: flex; gap: 1rem; justify-content: flex-end; align-items: center;">
                                             <!-- View (Eye) -->
@@ -325,6 +394,7 @@
                                             {% if t_lower == 'speed test' or t_lower == 'performance' %}{% set
                                             result_type = 'performance' %}
                                             {% elif 'meta' in t_lower %}{% set result_type = 'meta-tags' %}
+                                            {% elif 'image' in t_lower %}{% set result_type = 'image-alt' %}
                                             {% elif 'sitemap' in t_lower %}{% set result_type = 'sitemap' %}
                                             {% elif 'h1' in t_lower %}{% set result_type = 'h1' %}
                                             {% elif 'phone' in t_lower or 'cta' in t_lower %}{% set result_type =
@@ -333,24 +403,44 @@
                                             = 'static' %}
                                             {% elif 'dynamic' in t_lower %}{% set result_type = 'dynamic' %}
                                             {% elif 'accessibility' in t_lower %}{% set result_type = 'accessibility' %}
+                                            {% elif 'comparison' in t_lower %}{% set result_type = 'comparison' %}
                                             {% else %}{% set result_type = t_lower %}{% endif %}
-                                            {% set is_error = activity.status == 'Error' %}
+
+                                            {% set is_error = 'error' in activity.status.lower() %}
+                                            {% set is_running = activity.status == 'Running' or 'crawling' in
+                                            activity.status.lower() %}
+
+                                            {% if is_running %}
+                                            <button title="Delete" onclick="deleteSession('{{ activity.session_id }}')"
+                                                class="action-btn">
+                                                <img src="/static/svg/delete.svg" width="28" height="28" alt="Delete">
+                                            </button>
+                                            {% else %}
+                                            {% if is_error and activity.completed == 0 %}
+                                            <span class="action-disabled"
+                                                style="opacity: 0.5; cursor: not-allowed; display: inline-block;"
+                                                title="Cannot view error session">
+                                                <img src="/static/svg/eye.svg" width="28" height="28" alt="View">
+                                            </span>
+                                            {% else %}
                                             <a href="/results/{{ result_type }}/{{ activity.session_id }}" title="View"
-                                                style="opacity: {{ '0.4' if is_error else '0.8' }}; transition: opacity 0.2s; {{ 'pointer-events: none; cursor: not-allowed;' if is_error else '' }}">
+                                                style="opacity: 0.8; transition: opacity 0.2s; display: inline-block;">
                                                 <img src="/static/svg/eye.svg" width="28" height="28" alt="View">
                                             </a>
+                                            {% endif %}
 
                                             <button title="Restart Audit"
                                                 onclick="restartSession('{{ activity.session_id }}', '{{ result_type }}')"
-                                                style="background: none; border: none; cursor: {{ 'not-allowed' if is_error else 'pointer' }}; opacity: {{ '0.4' if is_error else '0.8' }}; padding: 0;"
-                                                {% if is_error %}disabled{% endif %}>
+                                                class="action-btn {{ 'action-disabled' if is_error else '' }}" {% if
+                                                is_error %}disabled{% endif %}>
                                                 <img src="/static/svg/restart.svg" width="28" height="28" alt="Restart">
                                             </button>
                                             <!-- Delete (Trash) -->
                                             <button title="Delete" onclick="deleteSession('{{ activity.session_id }}')"
-                                                style="background: none; border: none; cursor: pointer; opacity: 0.8; padding: 0;">
+                                                class="action-btn">
                                                 <img src="/static/svg/delete.svg" width="28" height="28" alt="Delete">
                                             </button>
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>
@@ -371,7 +461,7 @@
         <!-- Audit Progress Modal -->
         <div id="audit-modal" class="modal-overlay" style="display: none;">
             <div class="modal-content">
-                <span class="modal-close">×</span>
+                <span class="modal-close" onclick="closeSnapshotModal()">&times;</span>
                 <div class="modal-header">
                     <h3>Audit Session Restarted</h3>
                     <p class="modal-subtitle">Screenshots are being captured...</p>
@@ -386,10 +476,10 @@
                         <span id="total-url-count">--</span>
                     </div>
                     <button class="stop-session-btn">
-                        <span class="stop-icon">✕</span>
+                        <span class="stop-icon">&times;</span>
                         <span>Stop Session</span>
                     </button>
-                    <a href="#" class="view-report-btn" style="display: none;">View Report →</a>
+                    <a href="#" class="view-report-btn" style="display: none;">View Report &rarr;</a>
                 </div>
             </div>
         </div>
@@ -412,7 +502,7 @@
     </main>
 
     <script src="/static/js/toast.js"></script>
-    <script src="/static/js/main.js?v=2.14"></script>
+    <script src="/static/js/main.js?v=2.23"></script>
     <script>
         function viewSession(sessionId, sessionType) {
             const type = sessionType.toLowerCase();
@@ -489,6 +579,12 @@
 
                 if (response.ok) {
                     const data = await response.json();
+
+                    // Low Credit Popup logic for Restart
+                    if (data.low_credits) {
+                        window.showAlert('Low Credits Warning', 'Your credit balance is low (50 or below). Please top up soon to avoid interruption.');
+                    }
+
                     const newSessionId = data.session_id;
                     currentSessionId = newSessionId; // Update to NEW session ID
 
@@ -559,10 +655,19 @@
             if (progressContainer) progressContainer.classList.add('success');
             if (progressText) progressText.textContent = '100%';
 
-            // Update processed count to match total
+            // Update subtitle
+            const subtitle = document.querySelector('.modal-subtitle');
+            if (subtitle) subtitle.textContent = 'Audit completed successfully!';
+
+            // Update processed count to match total and show 'Processed' label
             if (processedCount && totalCount) {
                 const total = totalCount.textContent;
                 processedCount.textContent = total;
+            }
+            const progressStatus = document.querySelector('.progress-status');
+            if (progressStatus) {
+                const total = totalCount ? totalCount.textContent : '';
+                progressStatus.innerHTML = `Processed <strong>${total}</strong> URL${total == 1 ? '' : 's'}`;
             }
 
             if (stopBtn) stopBtn.style.display = 'none';
@@ -591,7 +696,32 @@
                 showToast('An error occurred.', 'error');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.local-time').forEach(el => {
+                const iso = el.getAttribute('data-timestamp');
+                if (!iso) return;
+                const d = new Date(iso);
+
+                // Format: DD-MM-YY, HH:MM am/pm
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = String(d.getFullYear()).slice(-2);
+
+                let hours = d.getHours();
+                const minutes = String(d.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'pm' : 'am';
+
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+
+                const formatted = `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
+                el.textContent = formatted;
+            });
+        });
     </script>
+
+
     <script>
         function showLogoutModal(e) {
             if (e) e.preventDefault();

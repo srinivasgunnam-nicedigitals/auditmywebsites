@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Image Alt Report - {{ session.name }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.52">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        body,
+        button,
+        input,
+        select,
+        textarea,
+        .sidebar,
+        .nav-item {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-blue);
+            background-color: rgba(79, 124, 255, 0.05);
+        }
+
+        .summary-card.active-filter {
+            border-color: var(--primary-blue) !important;
+            background-color: rgba(79, 124, 255, 0.1) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card.active-filter.mismatch-active {
+            border-color: #EF4444 !important;
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .summary-status-text {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .comparison-match {
+            border-left: 3px solid #10B981;
+        }
+
+        .comparison-mismatch {
+            border-left: 3px solid #EF4444;
+        }
+
+        .comparison-row td {
+            vertical-align: middle;
+        }
+
+        .selected-row {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .comparison-row-item {
+            transition: background-color 0.2s;
+        }
+
+        .comparison-row-item:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .staging-col.is-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 1.5rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
+</head>
+
+<body>
+    <div class="sidebar-overlay"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="/static/svg/sitetester-icon.svg" alt="Logo" class="brand-logo" width="24" height="24">
+            <span>Audit My Websites</span>
+            <img src="/static/svg/sitetesterright.svg" alt="Toggle Sidebar" id="sidebar-toggle" class="sidebar-toggle"
+                width="28" height="28">
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-title">Platform</div>
+        <a href="/platform/dashboard" class="nav-item">
+            <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
+            <span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main">
+                <img src="/static/svg/projects-logo.svg" class="icon" alt="">
+                <span>Audit Tools</span>
+            </div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/platform/image-alt" class="nav-item active">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main">
+                <img src="/static/svg/audit-history.svg" class="icon" alt="">
+                <span>Audit History</span>
+            </div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/history" class="nav-item">
+                <img src="/static/svg/view-history.svg" class="icon" alt="">
+                <span>All Audits</span>
+            </a>
+            <a href="/platform/history?type=static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/history?type=performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/history?type=accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/platform/history?type=phone" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/platform/history?type=h1" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/platform/history?type=meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+            <a href="/platform/history?type=image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/platform/history?type=sitemap" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+        <div style="flex: 1;"></div>
+        <a href="/platform/settings" class="nav-item">
+            <img src="/static/svg/settings.svg" class="icon" alt="">
+            <span>Settings</span>
+        </a>
+        <a href="#" onclick="showLogoutModal(event)" class="nav-item">
+            <img src="/static/svg/logout.svg" class="icon" alt="">
+            <span>Logout</span>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <button class="mobile-menu-toggle">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back</span>
+            </a>
+            <div class="header-left"></div>
+            
+            {% if user %}
+            <div class="credits-display-header" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 124, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(79, 124, 255, 0.2);">
+                <span style="color: #64748B; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Credits</span>
+                <span style="color: #4F7CFF; font-weight: 700; font-size: 0.95rem;">{{ user.credits }}</span>
+            </div>
+            {% endif %}
+            <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header"
+                style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                <img src="/static/svg/logout.svg" alt="Logout" width="20" height="20">
+                <span>Logout</span>
+            </a>
+        </header>
+
+        <div class="content-area">
+            {% set is_comparison = is_site_comparison %}
+            <div class="page-header">
+                <div class="page-title" style="display: flex; align-items: center; gap: 1rem;">
+                    <h1 style="margin: 0;" title="{{ session.name }}">{{ session.name|truncate(23, killwords=True,
+                        leeway=0) }}</h1>
+                </div>
+            </div>
+
+            <div id="is-comparison-flag" data-value="{{ is_site_comparison | tojson }}" style="display:none;"></div>
+
+            {% if is_comparison %}
+            <!-- Comparison Summary Grid -->
+            <div class="summary-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="summary-card active-filter" data-filter="all" onclick="toggleAltFilter('all')">
+                    <span class="summary-label">Total Paired Pages</span>
+                    <span class="summary-value">{{ paired_results|length }}</span>
+                    <span class="summary-status-text" style="opacity: 0.6;">Matched across sites</span>
+                </div>
+                <div class="summary-card" data-filter="total-images" onclick="toggleAltFilter('all')">
+                    <span class="summary-label">Total Images Checked</span>
+                    {% set ns_comp = namespace(total_imgs=0) %}
+                    {% for p in paired_results %}
+                        {% if p.live and p.live.images_alt %}{% set ns_comp.total_imgs = ns_comp.total_imgs + (p.live.images_alt|from_json or [])|length %}{% endif %}
+                        {% if p.staging and p.staging.images_alt %}{% set ns_comp.total_imgs = ns_comp.total_imgs + (p.staging.images_alt|from_json or [])|length %}{% endif %}
+                    {% endfor %}
+                    <span class="summary-value">{{ ns_comp.total_imgs }}</span>
+                    <span class="summary-status-text" style="opacity: 0.6;">Total assets audited</span>
+                </div>
+                <div class="summary-card" id="filter-alt-mismatch" onclick="toggleAltFilter('mismatch')"
+                    style="cursor: pointer; transition: all 0.2s ease;">
+                    <span class="summary-label">Mismatched Pages</span>
+                    {% set ns_mismatch = namespace(mismatched_pages=0) %}
+                    {% for p in paired_results %}
+                        {% if not p.live or not p.staging or p.live.score != p.staging.score %}
+                            {% set ns_mismatch.mismatched_pages = ns_mismatch.mismatched_pages + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    <span class="summary-value {{ 'text-danger' if ns_mismatch.mismatched_pages > 0 else 'text-success' }}">{{ ns_mismatch.mismatched_pages }}</span>
+                    <span class="summary-status-text">Pages with alt differences</span>
+                </div>
+            </div>
+            {% else %}
+            <!-- Single Page Summary Grid -->
+            <div class="summary-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="summary-card active-filter" data-filter="all" onclick="toggleAltFilter('all')">
+                    <span class="summary-label">Total Pages</span>
+                    <span class="summary-value">{{ results|length }}</span>
+                    <span class="summary-status-text" style="opacity: 0.6;">Audited in this session</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Total Images</span>
+                    {% set ns_single = namespace(total_imgs=0) %}
+                    {% for r in results %}
+                        {% set current_imgs = r.images_alt|from_json %}
+                        {% set ns_single.total_imgs = ns_single.total_imgs + (current_imgs or [])|length %}
+                    {% endfor %}
+                    <span class="summary-value">{{ ns_single.total_imgs }}</span>
+                    <span class="summary-status-text" style="opacity: 0.6;">Total assets detected</span>
+                </div>
+                <div class="summary-card" id="filter-alt-missing" data-filter="missing" onclick="toggleAltFilter('missing')"
+                    style="cursor: pointer; transition: all 0.2s ease;">
+                    <span class="summary-label">Total Missing Alts</span>
+                    {% set ns_miss = namespace(total_missing=0) %}
+                    {% for r in results %}
+                        {% set current_imgs = r.images_alt|from_json or [] %}
+                        {% set missing_count = current_imgs | rejectattr('alt') | list | length %}
+                        {% set ns_miss.total_missing = ns_miss.total_missing + missing_count %}
+                    {% endfor %}
+                    <span class="summary-value {{ 'text-danger' if ns_miss.total_missing > 0 else 'text-success' }}">{{ ns_miss.total_missing }}</span>
+                    <span class="summary-status-text">Images without alt tags</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Search and Results (Always shown, adapts columns) -->
+            <div class="results-container" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 1rem;">
+                <div class="search-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="position: relative; width: 400px;">
+                        <input type="text" id="global-search" placeholder="Search pages, images, or alt text..." 
+                            style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem 1rem 0.6rem 2.2rem; color: var(--text-primary); font-size: 0.9rem; outline: none; transition: border-color 0.2s;">
+                        <svg style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); opacity: 0.4;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <div id="results-count" style="font-size: 0.85rem; color: var(--text-secondary);">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="custom-scrollbar" style="overflow-x: auto; max-height: 800px;">
+                    <table class="data-table" style="width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px;">
+                        <thead style="position: sticky; top: 0; background: var(--bg-card); z-index: 10; box-shadow: 0 1px 0 var(--border-color);">
+                            <tr>
+                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 22%;">Live URL</th>
+                                <th class="staging-col {{ 'is-hidden' if not is_comparison }}" style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 22%;">Staging URL</th>
+                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 17%;">Image Asset</th>
+                                <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 15%;">{{ 'Live Alt' if is_comparison else 'Image Alt' }}</th>
+                                <th class="staging-col {{ 'is-hidden' if not is_comparison }}" style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 15%;">Staging Alt</th>
+                                <th class="staging-col {{ 'is-hidden' if not is_comparison }}" style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); width: 9%;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="image-alt-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: rgba(255,255,255,0.01);">
+                    <div class="pagination" id="details-pagination-controls">
+                        <!-- JS generated pagination -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="logout-confirm-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 2.5rem;">
+            <div
+                style="width: 64px; height: 64px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <img src="/static/svg/logout.svg" alt="" width="32" height="32"
+                    style="filter: brightness(0) fill(#EF4444);">
+            </div>
+            <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Confirm Logout</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Are you sure you want to log out of your
+                session?</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <button onclick="hideLogoutModal()" class="btn btn-secondary">Cancel</button>
+                <a href="/logout" class="btn btn-primary"
+                    style="background: #EF4444; border-color: #EF4444; text-decoration: none; display: flex; align-items: center; justify-content: center;">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <script id="comparison-data" type="application/json">
+        {{ paired_results | tojson | safe }}
+    </script>
+
+    <script src="/static/js/main.js?v=2.23"></script>
+    <script>
+        const rawData = JSON.parse(document.getElementById('comparison-data').textContent);
+        const isComparison = JSON.parse(document.getElementById('is-comparison-flag').dataset.value);
+        const liveBase = "{{ live_url }}".replace(/\/$/, "");
+        const stagingBase = "{{ staging_url }}".replace(/\/$/, "");
+        let flattenedData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let activeAltFilter = null;
+
+        function getRelPath(url) {
+            if (!url) return "";
+            try {
+                const u = new URL(url);
+                return u.pathname + u.search;
+            } catch(e) { 
+                return url.split('/').pop();
+            }
+        }
+
+        function flattenData() {
+            flattenedData = [];
+            rawData.forEach(page => {
+                const liveImgs = page.live && page.live.images_alt ? JSON.parse(page.live.images_alt) : [];
+                const stagingImgs = page.staging && page.staging.images_alt ? JSON.parse(page.staging.images_alt) : [];
+                const matchedStaging = new Set();
+                
+                liveImgs.forEach(lImg => {
+                    const lRel = getRelPath(lImg.src);
+                    let match = isComparison ? stagingImgs.find(sImg => getRelPath(sImg.src) === lRel) : null;
+                    if (match) matchedStaging.add(match.src);
+                    flattenedData.push({
+                        path: page.path,
+                        live: lImg,
+                        staging: match
+                    });
+                });
+
+                if (isComparison) {
+                    stagingImgs.forEach(sImg => {
+                        if (!matchedStaging.has(sImg.src)) {
+                            flattenedData.push({
+                                path: page.path,
+                                live: null,
+                                staging: sImg
+                            });
+                        }
+                    });
+                }
+            });
+            filteredData = [...flattenedData];
+        }
+
+        function toggleAltFilter(type) {
+            const cards = document.querySelectorAll('.summary-card');
+            
+            if (activeAltFilter === type && type !== 'all') {
+                activeAltFilter = null;
+                type = 'all';
+            } else {
+                activeAltFilter = type === 'all' ? null : type;
+            }
+
+            cards.forEach(card => {
+                card.classList.remove('active-filter');
+                card.classList.remove('mismatch-active');
+                if (card.dataset.filter === type) {
+                    card.classList.add('active-filter');
+                    if (type === 'mismatch' || type === 'missing') {
+                        card.classList.add('mismatch-active');
+                    }
+                }
+            });
+
+            currentPage = 1;
+            applyFilters();
+        }
+
+        function updateCardState(card, isActive) {
+            // Deprecated - using toggleAltFilter instead
+        }
+
+        function applyFilters() {
+            const term = document.getElementById('global-search').value.toLowerCase();
+            
+            filteredData = flattenedData.filter(item => {
+                // Search Filter
+                const path = item.path.toLowerCase();
+                const liveAlt = item.live ? (item.live.alt || "").toLowerCase() : "";
+                const stagingAlt = item.staging ? (item.staging.alt || "").toLowerCase() : "";
+                const src = (item.live ? item.live.src : (item.staging ? item.staging.src : "")).toLowerCase();
+                const matchesSearch = path.includes(term) || liveAlt.includes(term) || stagingAlt.includes(term) || src.includes(term);
+
+                if (!matchesSearch) return false;
+
+                // Category Filter
+                if (activeAltFilter === 'missing') {
+                    return item.live && !item.live.alt;
+                } else if (activeAltFilter === 'mismatch') {
+                    // Show if: 
+                    // 1. Missing on one side 
+                    // 2. Different alt values on both sides
+                    return !item.live || !item.staging || (item.live.alt !== item.staging.alt);
+                }
+
+                return true;
+            });
+
+            renderTable();
+        }
+
+        function getPageName(path) {
+            if (!path || path === "/") return "Home (/)";
+            if (path.startsWith('http')) {
+                try {
+                    const u = new URL(path);
+                    return u.pathname === "/" ? "Home (" + u.origin + ")" : u.pathname + " (" + u.origin + ")";
+                } catch(e) { return path; }
+            }
+            const parts = path.split('/').filter(p => p);
+            if (parts.length === 0) return "Home (/)";
+            const last = parts[parts.length - 1];
+            const name = last.split(/[-_]/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            return `${name} (${path})`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('image-alt-body');
+            const countDisplay = document.getElementById('results-count');
+            tbody.innerHTML = '';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pagedItems = filteredData.slice(start, end);
+
+            countDisplay.innerHTML = `Showing <b>${filteredData.length}</b> image comparisons`;
+
+            if (pagedItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 4rem; color: var(--text-secondary);">No matching images found.</td></tr>';
+                document.getElementById('details-pagination-controls').innerHTML = '';
+                return;
+            }
+
+            let lastPath = null;
+            pagedItems.forEach(item => {
+                const pageName = getPageName(item.path);
+                
+                if (item.path !== lastPath) {
+                    const pathHeader = document.createElement('tr');
+                    pathHeader.style.background = 'rgba(79, 124, 255, 0.15)';
+                    pathHeader.innerHTML = `
+                        <td colspan="6" style="padding: 0.8rem 1.5rem; border-bottom: 2px solid var(--border-color); font-size: 1rem; font-weight: 700; color: #ffffff;">
+                            ${pageName}
+                        </td>
+                    `;
+                    tbody.appendChild(pathHeader);
+                    lastPath = item.path;
+                }
+
+                const lImg = item.live;
+                const match = item.staging;
+                const isMatch = isComparison && lImg && match && (match.alt === lImg.alt);
+                const rowClass = isComparison ? (isMatch ? 'comparison-match' : 'comparison-mismatch') : '';
+
+                let tr = document.createElement('tr');
+                tr.className = `comparison-row ${rowClass}`;
+                
+                const liveAlt = lImg ? (lImg.alt || '<span class="text-danger" style="font-weight:600;">Missing Alt</span>') : '<span style="font-style:italic; opacity:0.5;">Not found on live</span>';
+                const stagingAlt = match ? (match.alt || '<span class="text-danger" style="font-weight:600;">Missing Alt</span>') : '<span style="font-style:italic; opacity:0.5;">Not found on staging</span>';
+                const matchStatus = isComparison ? (isMatch ? '<span class="text-success" style="font-weight:600;">Match</span>' : '<span class="text-danger" style="font-weight:600;">Mismatch</span>') : '';
+                const imgSrc = lImg ? lImg.src : (match ? match.src : "");
+                const imgFilename = imgSrc ? imgSrc.split('/').pop() : 'Unknown';
+
+                const fullLiveUrl = item.path.startsWith('http') ? item.path : (liveBase + item.path);
+                const fullStagingUrl = item.path.startsWith('http') ? item.path : (stagingBase + item.path);
+
+                tr.innerHTML = `
+                    <td style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; font-family: monospace; color: #fff; opacity: 0.8; word-break: break-all;" title="${fullLiveUrl}">${fullLiveUrl}</td>
+                    <td class="staging-col" style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; font-family: monospace; color: #fff; opacity: 0.8; word-break: break-all; ${isComparison ? '' : 'display: none;'}" title="${fullStagingUrl}">${fullStagingUrl}</td>
+                    <td style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);">
+                        <div style="font-weight:600; font-size:0.85rem; color: #4F7CFF; margin-bottom:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${imgFilename}">${imgFilename}</div>
+                        <div style="font-size:0.65rem; opacity:0.5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${imgSrc}">${imgSrc}</div>
+                    </td>
+                    <td style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; color: #fff; ${!isMatch && isComparison ? 'color: #EF4444;' : ''}">${liveAlt}</td>
+                    <td class="staging-col" style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; color: #fff; ${isComparison ? '' : 'display: none;'} ${!isMatch && isComparison ? 'color: #EF4444;' : ''}">${stagingAlt}</td>
+                    <td class="staging-col" style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; ${isComparison ? '' : 'display: none;'}">${matchStatus}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('details-pagination-controls');
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            html += `<button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" title="Previous">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                     </button>`;
+
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, currentPage + 2);
+            
+            if (start > 1) html += `<button class="pagination-btn" onclick="changePage(1)">1</button>${start > 2 ? '<span style="padding:0 0.5rem; opacity:0.5;">...</span>' : ''}`;
+            for (let i = start; i <= end; i++) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            if (end < totalPages) html += `${end < totalPages - 1 ? '<span style="padding:0 0.5rem; opacity:0.5;">...</span>' : ''}<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+
+            html += `<button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" title="Next">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                     </button>`;
+
+            container.innerHTML = html;
+        }
+
+        window.changePage = (page) => {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Search functionality
+        document.getElementById('global-search').addEventListener('input', () => {
+            currentPage = 1;
+            applyFilters();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (rawData && rawData.length > 0) {
+                flattenData();
+                renderTable();
+            } else {
+                const tbody = document.getElementById('image-alt-body');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 4rem; color: var(--text-secondary);">No data available for this audit.</td></tr>';
+            }
+        });
+
+        function hideLogoutModal() {
+            document.getElementById('logout-confirm-modal').style.display = 'none';
+        }
+
+        window.showLogoutModal = function(e) {
+            if (e) e.preventDefault();
+            document.getElementById('logout-confirm-modal').style.display = 'flex';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (event.target == modal) {
+                hideLogoutModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

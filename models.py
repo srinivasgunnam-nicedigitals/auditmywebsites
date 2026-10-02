@@ -14,11 +14,35 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False) # Local auth requires password hash
+    is_admin = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
+    credits = Column(Integer, default=500)
+    low_credit_notified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow, index=True)
     
     def __repr__(self):
-        return f"<User(id='{self.id}', username='{self.username}', email='{self.email}')>"
+        return f"<User(id='{self.id}', username='{self.username}', email='{self.email}', admin='{self.is_admin}')>"
+
+class UserLog(Base):
+    __tablename__ = "user_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, nullable=False, index=True)
+    endpoint = Column(String, nullable=False)
+    method = Column(String, nullable=False)
+    ip_address = Column(String, nullable=True)
+    credits_used = Column(Integer, default=0)
+    credits_balance = Column(Integer, nullable=True)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow, index=True)
+
+class CreditTransaction(Base):
+    __tablename__ = "credit_transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    amount = Column(Integer, nullable=False)
+    description = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, index=True)
 
 class AuditSession(Base):
     __tablename__ = "audit_sessions"
@@ -33,6 +57,8 @@ class AuditSession(Base):
     browsers = Column(Text, nullable=False)  # JSON string of browsers
     resolutions = Column(Text, nullable=False)  # JSON string of resolutions
     status = Column(String, default="running")  # running, completed, stopped, error
+    credits_used = Column(Integer, default=0)
+    credits_balance = Column(Integer, nullable=True)
     total_expected = Column(Integer, default=0)
     completed = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.datetime.utcnow, index=True)
@@ -194,6 +220,9 @@ class MetaTagsResult(Base):
     warnings = Column(Text, nullable=True) # List of warnings (e.g. length issues)
     keyword_consistency = Column(Text, nullable=True) # JSON of keyword match stats
     
+    # Image Analysis (JSON)
+    images_alt = Column(Text, nullable=True) # JSON list of {src, alt} for all images
+    
     # Score
     score = Column(Integer, default=0)
     
@@ -221,9 +250,50 @@ class SitemapResult(Base):
     # Organic Checks
     reachability_sample = Column(Text, nullable=True) # JSON of {url: status_code} sample
     robots_status = Column(String, nullable=True) # "found", "missing", "error"
+    robots_txt_content = Column(Text, nullable=True) # Full robots.txt content
+    sitemap_urls = Column(Text, nullable=True) # JSON list of URLs found in sitemap
+    internal_links = Column(Text, nullable=True) # JSON of internal links analysis
+    link_details = Column(Text, nullable=True) # JSON array of detailed link-level data
+    sitemap_hierarchy = Column(Text, nullable=True) # JSON of detailed sitemap tree
+    scan_logs = Column(Text, nullable=True) # JSON array of scan progress logs
     load_time_ms = Column(Integer, default=0)
     
     # Score
     score = Column(Integer, default=0)
+    
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+class ImageAltResult(Base):
+    __tablename__ = "image_alt_results"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String, ForeignKey("audit_sessions.session_id"), nullable=False)
+    url = Column(String, nullable=False)
+    
+    # Image Analysis (JSON)
+    images_alt = Column(Text, nullable=True) # JSON list of {src, alt}
+    
+    # Score
+    score = Column(Integer, default=0)
+    
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class ContentComparisonResult(Base):
+    __tablename__ = "content_comparison_results"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String, ForeignKey("audit_sessions.session_id"), nullable=False)
+    live_url = Column(String, nullable=False)
+    staging_url = Column(String, nullable=False)
+    
+    # Scores & Summary
+    similarity_score = Column(Integer, default=0) # 0-100
+    added_count = Column(Integer, default=0)
+    removed_count = Column(Integer, default=0)
+    modified_count = Column(Integer, default=0)
+    
+    # Data (JSON)
+    diff_rows = Column(Text, nullable=True) # JSON: List of dicts
+    observations = Column(Text, nullable=True) # JSON: List of strings
+    metadata_diff = Column(Text, nullable=True) # JSON: metadata changes
     
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit My Websites - Content Comparison Report</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.53">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body, button, input, select, textarea, .sidebar, .nav-item {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        /* Comparison Styling */
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .report-title-group h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .report-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .score-badge {
+            background: rgba(79, 124, 255, 0.1);
+            color: #4F7CFF;
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-weight: 700;
+            border: 1px solid rgba(79, 124, 255, 0.2);
+        }
+
+        .diff-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .diff-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            table-layout: fixed;
+        }
+
+        .diff-table th {
+            background: rgba(255, 255, 255, 0.03);
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .line-no {
+            width: 50px;
+            text-align: right;
+            color: #64748B;
+            padding-right: 15px;
+            user-select: none;
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .content {
+            padding: 0.5rem 1rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            vertical-align: top;
+            color: var(--text-primary);
+        }
+
+        tr.equal .content {
+            opacity: 0.6;
+        }
+
+        tr.added {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        tr.added .content {
+            color: #10B981;
+        }
+
+        tr.removed {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        tr.removed .content {
+            color: #EF4444;
+        }
+
+        tr.modified {
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+
+        tr.modified .content {
+            color: #F59E0B;
+        }
+
+        .observations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .obs-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .obs-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .obs-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Section banner rows */
+        tr.section-banner td {
+            background: rgba(79, 124, 255, 0.12);
+            color: #4F7CFF;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border-top: 1px solid rgba(79, 124, 255, 0.3);
+            border-bottom: 1px solid rgba(79, 124, 255, 0.3);
+        }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="/static/svg/sitetester-icon.svg" alt="Logo" class="brand-logo" width="24" height="24">
+            <span>Audit My Websites</span>
+            <img src="/static/svg/sitetesterright.svg" alt="Toggle Sidebar" id="sidebar-toggle" class="sidebar-toggle" width="28" height="28">
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-title">Platform</div>
+
+        <a href="/platform/dashboard" class="nav-item">
+            <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
+            <span>Dashboard</span>
+        </a>
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit Tools</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <div class="nav-submenu">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+
+            <a href="/platform/image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+
+        <div style="flex: 1;"></div>
+        <a href="/platform/settings" class="nav-item">
+            <img src="/static/svg/settings.svg" class="icon" alt="">
+            <span>Settings</span>
+        </a>
+        <a href="#" onclick="showLogoutModal(event)" class="nav-item">
+            <img src="/static/svg/logout.svg" class="icon" alt="">
+            <span>Logout</span>
+        </a>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back</span>
+            </a>
+
+            {% if user %}
+            <div class="credits-display-header" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 124, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(79, 124, 255, 0.2);">
+                <span style="color: #64748B; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Credits</span>
+                <span style="color: #4F7CFF; font-weight: 700; font-size: 0.95rem;">{{ user.credits }}</span>
+            </div>
+            {% endif %}
+            <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header" style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                <img src="/static/svg/logout.svg" alt="Logout" width="20" height="20">
+                <span>Logout</span>
+            </a>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="report-header">
+                <div class="report-title-group">
+                    <h1>Content Comparison Report</h1>
+                    <div class="report-meta">
+                        <span><strong>STAGING:</strong> {{ result.staging_url }}</span>
+                        <span><strong>LIVE:</strong> {{ result.live_url }}</span>
+                    </div>
+                </div>
+                <div class="score-badge">
+                    Similarity Score: {{ result.similarity_score }}%
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Added</div>
+                        <div class="stat-value" style="color: #10B981;">{{ result.added_count }}</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Removed</div>
+                        <div class="stat-value" style="color: #EF4444;">{{ result.removed_count }}</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Modified</div>
+                        <div class="stat-value" style="color: #F59E0B;">{{ result.modified_count }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if observations %}
+            <div class="section-title" style="margin-top: 2rem;">Key Observations</div>
+            <div class="observations-grid">
+                {% for obs in observations %}
+                <div class="obs-card">
+                    <img src="/static/svg/info.svg" class="obs-icon" alt="Info">
+                    <div class="obs-text">{{ obs }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="diff-container">
+                <table class="diff-table">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="line-no">#</th>
+                            <th>Staging Content</th>
+                            <th class="line-no">#</th>
+                            <th>Live Content</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in diff_rows %}
+                        {% if row.left_text.startswith('──') or row.right_text.startswith('──') %}
+                        <tr class="section-banner">
+                            <td class="line-no"></td>
+                            <td class="content" colspan="3">{{ row.left_text or row.right_text }}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="{{ row.type }}">
+                            <td class="line-no">{{ row.left_no }}</td>
+                            <td class="content">{{ row.left_text }}</td>
+                            <td class="line-no">{{ row.right_no }}</td>
+                            <td class="content">{{ row.right_text }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/main.js?v=2.23"></script>
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-confirm-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 400px; width: 100%;">
+            <div class="modal-header">
+                <h3>Confirm Logout</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: #cbd5e1; margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
+                <div class="modal-actions" style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="closeLogoutModal()">Cancel</button>
+                    <a href="/logout" class="btn btn-primary" style="background-color: #EF4444; border-color: #EF4444;">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutModal(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeLogoutModal() {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/aboutus/
+Live:    https://mikeschaferlaw.com/aboutus/
+Date:    2026-03-17 16:16:42
+
+SUMMARY
+- Similarity Score: 7%
+- Added Lines:      7
+- Removed Lines:    152
+- Modified Lines:   0
+
+OBSERVATIONS
+- ⚠️ Major content overhaul detected.
+- 💰 Pricing-related changes detected.
+- 📄 Meta Description updated.
+
+ADDED CONTENT (top 20)
++ Call Now for a Free Consultation
++ Directions
++ Email
++ Call
++ /wp-content/uploads/2020/07/The_Schafer_Law_Office___Firm_Overview_h264_764x430-2.mp4
++ (Esc)
++ Search Website
+
+REMOVED CONTENT (top 20)
+- Home
+- Practice areas
+- Personal Injury Lawyer
+- Frankfort Personal Injury Lawyer
+- Frankfort Car Accident Lawyer
+- Jeffersontown Personal Injury Lawyer
+- Jeffersontown Car Accident Attorney
+- Jeffersontown Truck Accident Lawyer
+- Jeffersontown Motorcycle Accident Attorney
+- Jeffersontown Slip and Fall Attorney
+- Jeffersontown Wrongful Death Attorney
+- Car Accident Lawyer
+- DUI Accident Injury Attorney
+- Distracted Driver Accident Lawyer
+- Shepherdsville Car Accident Lawyer
+- Uber & Lyft Rideshare Accident Attorney
+- Uber Accident Lawyer
+- Lyft Accident Lawyer
+- Car Accident Settlements
+- Car Accident Lawsuits Process and Timeline

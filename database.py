@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, MetaData
 from databases import Database
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 import os
 from dotenv import load_dotenv
 
@@ -12,12 +13,12 @@ load_dotenv()
 os.makedirs("database", exist_ok=True)
 
 # Database Configuration from environment or settings
-DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./sitetoolpro.db"
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./database/sitetoolpro.db"
 
 # Connection arguments
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
-    connect_args = {"check_same_thread": False}
+    connect_args = {"check_same_thread": False, "timeout": 30}
 
 # Connection pooling configuration
 engine_kwargs = {
@@ -26,8 +27,11 @@ engine_kwargs = {
     "echo": False
 }
 
-# Only add extra pooling for non-SQLite (PostgreSQL)
-if not DATABASE_URL.startswith("sqlite"):
+# SQLite: Use NullPool to avoid connection pool exhaustion with many concurrent workers
+# PostgreSQL: Use QueuePool with generous limits
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["poolclass"] = NullPool
+else:
     engine_kwargs["pool_size"] = 10
     engine_kwargs["max_overflow"] = 20
 
@@ -40,3 +44,12 @@ metadata = MetaData()
 
 # Async database instance (currently unused but kept for future async operations)
 database = Database(DATABASE_URL)
+
+# Dependency for FastAPI routes
+def get_db():
+    """Database session dependency for FastAPI routes"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

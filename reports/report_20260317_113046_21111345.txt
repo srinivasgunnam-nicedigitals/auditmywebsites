@@ -1,0 +1,60 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/
+Live:    https://mikeschaferlaw.com/
+Date:    2026-03-17 11:30:46
+
+SUMMARY
+- Similarity Score: 6%
+- Added Lines:      286
+- Removed Lines:    60
+- Modified Lines:   0
+
+OBSERVATIONS
+- ⚠️ Major content overhaul detected. The pages are significantly different.
+- 💰 Pricing-related content changes detected. Please verify accuracy.
+- 📞 Contact information or CTA changes detected.
+
+ADDED CONTENT (top 20)
++ 30 Years of
++ Fighting for Louisville.
++ A Lifetime of Restoring Lives.
++ We Concentrate On Personal Injury Cases
++ Get a Free Case Review
++ Our commitment is simple:
++ protect your rights, maximize your
++ recovery, and keep you informed.
++ – Michael Schafer
++ You Don’t Have to
++ face This Alone
++ You Don’t Have to
++ face This Alone
++ Learn About Us
++ Call Us Today
++ 502-584-9511
++ The Lawyer Who Wrote
++ the Book
++ The Lawyer Who Wrote
++ the Book
+
+REMOVED CONTENT (top 20)
+- We are devoted to protecting your legal rights and your interests. Your case will be handled with compassion, personal attention, professionalism and aggressive legal advocacy.
+- Free consultation
+- Learn About The Schafer Advantage
+- PRACTICE AREAS
+- How Can We Help You?
+- Car Accidents
+- Pedestrian Accidents
+- Truck Accidents
+- Wrongful Death & Fatal Accidents
+- Dog Bites & Animal Attacks
+- Motorcycle Accidents
+- Slip & Fall/Premises Liability
+- Bicycle Accidents
+- Nursing Home/Elder Abuse
+- Let Us be there for you
+- 30
+- HELPING INJURED KENTUCKIANS
+- years
+- $1,050,000
+- Mother Crushed By Truck Rollover

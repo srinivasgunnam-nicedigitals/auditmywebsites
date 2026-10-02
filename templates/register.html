@@ -2,6 +2,12 @@
 <html lang="en" class="dark">
 
 <head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Audit My Websites</title>
@@ -22,14 +28,14 @@
             transition: color 0.2s ease;
         }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
 </head>
 
 <body class="bg-slate-950 text-slate-200 min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full">
         <div class="max-w-md w-full">
             <div class="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-2xl relative">
-
-                <div class="flex items-center gap-2 mb-6 justify-center">
+                <div class="flex items-center gap-2 mb-8 justify-center">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white">
                         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -47,84 +53,69 @@
                     <span class="font-bold text-white tracking-tight text-xl">Audit My Websites</span>
                 </div>
 
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold text-white mb-2">Create Your Account</h2>
-                    <p class="text-slate-400 text-sm">Join Audit My Websites and start auditing today</p>
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Create your account</h2>
                 </div>
 
-                <form id="registerForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Email Address</label>
-                        <input type="email" name="email" required
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                            placeholder="name@company.com">
-                    </div>
+                <form id="registerForm" class="space-y-6">
+                    <!-- Integrated Registration Flow -->
+                    <div id="registration_container" class="space-y-6">
+                        <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signup"
+                            data-ux_mode="popup" data-callback="handleCredentialResponse" data-auto_prompt="false">
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Username</label>
-                        <input type="text" name="username" required
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                            placeholder="Choose a username">
-                    </div>
+                        <div class="w-full" id="google_btn_register_container">
+                            <div id="google_btn_register" class="flex justify-center" style="min-height: 40px;"></div>
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Password</label>
+                        <div class="relative flex items-center justify-center">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-slate-800"></div>
+                            </div>
+                            <span class="relative bg-slate-900 px-4 text-sm text-slate-500">or</span>
+                        </div>
+
+                        <!-- Email Field -->
                         <div class="relative">
-                            <input type="password" id="registerPassword" name="password" required minlength="6"
-                                class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
-                                placeholder="Minimum 6 characters">
-                            <button type="button"
-                                onclick="togglePasswordVisibility('registerPassword', 'registerEyeIcon')"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
-                                <i data-lucide="eye" id="registerEyeIcon" class="w-5 h-5"></i>
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <input type="email" id="id_email" name="email" required
+                                class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                placeholder="Enter your email" autocomplete="email">
+                        </div>
+
+                        <!-- Password Field Area (Initially Hidden) -->
+                        <div id="password_area"
+                            class="hidden space-y-6 opacity-0 translate-y-2 transition-all duration-300">
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                    <i data-lucide="lock" class="w-5 h-5"></i>
+                                </div>
+                                <input type="password" id="registerPassword" name="password" required minlength="6"
+                                    class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-12 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                    placeholder="Enter your password">
+                                <button type="button"
+                                    onclick="togglePasswordVisibility('registerPassword', 'registerEyeIcon')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
+                                    <i data-lucide="eye" id="registerEyeIcon" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/20 transition-all transform hover:scale-[1.01]">
+                                Sign Up
                             </button>
                         </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Confirm Password</label>
-                        <div class="relative">
-                            <input type="password" id="confirmPassword" name="confirm_password" required minlength="6"
-                                class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
-                                placeholder="Re-enter your password">
-                            <button type="button"
-                                onclick="togglePasswordVisibility('confirmPassword', 'confirmEyeIcon')"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
-                                <i data-lucide="eye" id="confirmEyeIcon" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="pt-2">
-                        <button type="submit"
-                            class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg shadow-lg shadow-blue-500/20 transition-all transform hover:scale-[1.02]">
-                            Sign Up
-                        </button>
                     </div>
                 </form>
 
-                <div class="my-6 relative flex items-center justify-center">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-slate-800"></div>
-                    </div>
-                    <span class="relative bg-slate-900 px-4 text-xs text-slate-500 uppercase tracking-wider">Or sign up
-                        with</span>
-                </div>
-
-                <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signup" data-ux_mode="popup"
-                    data-callback="handleCredentialResponse" data-auto_prompt="false">
-                </div>
-
-                <div class="w-full flex justify-center">
-                    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
-                        data-text="signup_with" data-size="large" data-logo_alignment="left" data-width="380">
-                    </div>
-                </div>
-
-                <div class="mt-8 text-center text-sm">
+                <div class="mt-8 text-center text-sm border-t border-slate-800/50 pt-6">
                     <p class="text-slate-400">Already have an account?
                         <a href="/login"
-                            class="text-blue-500 hover:text-blue-400 font-medium transition hover:underline">Sign In</a>
+                            class="text-blue-500 hover:text-blue-400 font-medium transition hover:underline">Log in</a>
                     </p>
                 </div>
             </div>
@@ -132,6 +123,24 @@
 
         <script>
             lucide.createIcons();
+
+            const emailInput = document.getElementById('id_email');
+            const passwordArea = document.getElementById('password_area');
+
+            // Reveal password field on email input interaction
+            emailInput.addEventListener('focus', () => revealPassword());
+            emailInput.addEventListener('input', () => {
+                if (emailInput.value.length > 0) revealPassword();
+            });
+
+            function revealPassword() {
+                if (passwordArea.classList.contains('hidden')) {
+                    passwordArea.classList.remove('hidden');
+                    // Force reflow for transition
+                    void passwordArea.offsetWidth;
+                    passwordArea.classList.remove('opacity-0', 'translate-y-2');
+                }
+            }
 
             async function handleCredentialResponse(response) {
                 try {
@@ -182,26 +191,56 @@
                 lucide.createIcons();
             }
 
+            // Responsive Google Button rendering
+            let resizeTimer;
+            function renderGoogleButton() {
+                if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
+
+                const targetDiv = document.getElementById("google_btn_register");
+                const form = document.getElementById('registerForm');
+                if (targetDiv && form) {
+                    const width = form.offsetWidth;
+                    google.accounts.id.renderButton(
+                        targetDiv,
+                        {
+                            theme: "filled_black",
+                            size: "large",
+                            shape: "rectangular",
+                            text: "signup_with",
+                            logo_alignment: "left",
+                            width: width || 400
+                        }
+                    );
+                }
+            }
+
+            function debouncedRender() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(renderGoogleButton, 200);
+            }
+
+            function initGoogleButton() {
+                let attempts = 0;
+                const check = setInterval(() => {
+                    attempts++;
+                    if (window.google && window.google.accounts && window.google.accounts.id) {
+                        clearInterval(check);
+                        renderGoogleButton();
+                    } else if (attempts > 50) {
+                        clearInterval(check);
+                    }
+                }, 100);
+            }
+
+            window.addEventListener('load', initGoogleButton);
+            window.addEventListener('resize', debouncedRender);
+
             document.getElementById('registerForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
 
-                // Validation: Check if passwords match
-                if (data.password !== data.confirm_password) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Passwords do not match',
-                        text: 'Please make sure your passwords match.',
-                        background: '#0f172a',
-                        color: '#f8fafc',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                    return;
-                }
-
-                // Remove confirm_password from payload before sending
-                delete data.confirm_password;
+                // API will automatically generate a unique username from email
 
                 try {
                     const response = await fetch('/api/auth/register', {
@@ -214,8 +253,8 @@
                     if (response.ok) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Welcome to Audit My Websites!',
-                            text: 'Your account has been created successfully. Redirecting to your dashboard...',
+                            title: 'Account Created!',
+                            text: 'Redirecting to your dashboard...',
                             background: '#0f172a',
                             color: '#f8fafc',
                             timer: 2000,

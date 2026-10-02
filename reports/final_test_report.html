@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-by-Side Content Comparison</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 1.5rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .header h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; color: var(--primary); }
+        .urls { display: flex; gap: 2rem; font-size: 0.85rem; color: #64748b; }
+        
+        .diff-container { background: var(--card); border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+        .diff-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; table-layout: fixed; }
+        
+        .diff-table th { background: #f8fafc; padding: 0.75rem; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; font-size: 0.75rem; text-transform: uppercase; }
+        .line-no { width: 40px; text-align: right; color: #94a3b8; padding-right: 10px; user-select: none; background: #f8fafc; border-right: 1px solid #e2e8f0; }
+        .content { padding-left: 10px; white-space: pre-wrap; word-break: break-all; vertical-align: top; padding-top: 4px; padding-bottom: 4px; }
+        
+        tr.equal .content { color: #475569; }
+        tr.added { background-color: #ecfdf5; }
+        tr.added .content { color: #065f46; }
+        tr.removed { background-color: #fef2f2; }
+        tr.removed .content { color: #991b1b; }
+        tr.modified { background-color: #fffbeb; }
+        tr.modified .content { color: #92400e; }
+        
+        .type-indicator { width: 4px; padding: 0; }
+        tr.added .type-indicator { background: var(--success); }
+        tr.removed .type-indicator { background: var(--danger); }
+        tr.modified .type-indicator { background: var(--warning); }
+        
+        .sticky-header { position: sticky; top: 0; z-index: 10; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Content Comparison Report</h1>
+            <div class="urls">
+                <div><strong>LIVE:</strong> https://live.example.com</div>
+                <div><strong>STAGING:</strong> https://staging.example.com</div>
+                <div><strong>SIMILARITY:</strong> 50%</div>
+            </div>
+        </div>
+
+        <div class="diff-container">
+            <table class="diff-table">
+                <thead class="sticky-header">
+                    <tr>
+                        <th class="line-no">#</th>
+                        <th>Live Content</th>
+                        <th class="line-no">#</th>
+                        <th>Staging Content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr class="equal">
+                        <td class="line-no">1</td>
+                        <td class="content">Line 1: Unchanged content.</td>
+                        <td class="line-no">1</td>
+                        <td class="content">Line 1: Unchanged content.</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">2</td>
+                        <td class="content">Line 2: This line will be removed.</td>
+                        <td class="line-no">2</td>
+                        <td class="content">Line 3: This line has been modified for staging.</td>
+                    </tr>
+                    
+                    <tr class="modified">
+                        <td class="line-no">3</td>
+                        <td class="content">Line 3: This line will be modified.</td>
+                        <td class="line-no">3</td>
+                        <td class="content">Line 3.5: This line is newly added.</td>
+                    </tr>
+                    
+                    <tr class="equal">
+                        <td class="line-no">4</td>
+                        <td class="content">Line 4: Unchanged footer.</td>
+                        <td class="line-no">4</td>
+                        <td class="content">Line 4: Unchanged footer.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

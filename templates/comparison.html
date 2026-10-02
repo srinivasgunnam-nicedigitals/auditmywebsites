@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit My Websites - Content Comparison</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.52">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body, button, input, select, textarea, .sidebar, .nav-item {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .results-card {
+            display: none;
+            margin-top: 2rem;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4F7CFF;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="/static/svg/sitetester-icon.svg" alt="Logo" class="brand-logo" width="24" height="24">
+            <span>Audit My Websites</span>
+            <img src="/static/svg/sitetesterright.svg" alt="Toggle Sidebar" id="sidebar-toggle" class="sidebar-toggle" width="28" height="28">
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-title">Platform</div>
+        <a href="/platform/dashboard" class="nav-item">
+            <img src="/static/svg/dashboard-logo.svg" class="icon" alt="">
+            <span>Dashboard</span>
+        </a>
+        <div class="nav-section-title collapsible">
+            <div class="nav-section-main"><img src="/static/svg/projects-logo.svg" class="icon" alt=""><span>Audit Tools</span></div>
+            <svg class="submenu-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+        <div class="nav-submenu">
+            <a href="/platform/device-lab" class="nav-item">
+                <img src="/static/svg/device-lab.svg" class="icon" alt="">
+                <span>Live Responsive</span>
+            </a>
+            <a href="/platform/static" class="nav-item">
+                <img src="/static/svg/static-audit.svg" class="icon" alt="">
+                <span>Responsive Audit</span>
+            </a>
+            <a href="/platform/performance" class="nav-item">
+                <img src="/static/svg/performance.svg" class="icon" alt="">
+                <span>Speed Test</span>
+            </a>
+            <a href="/platform/accessibility" class="nav-item">
+                <img src="/static/svg/accessibility.svg" class="icon" alt="">
+                <span>Accessibility</span>
+            </a>
+            <a href="/phone-audit" class="nav-item">
+                <img src="/static/svg/phone-validator.svg" class="icon" alt="">
+                <span>CTA Audit</span>
+            </a>
+            <a href="/h1-audit" class="nav-item">
+                <img src="/static/svg/H1-tags.svg" class="icon" alt="">
+                <span>H1 Tags</span>
+            </a>
+            <a href="/scan/meta-tags" class="nav-item sub-active">
+                <img src="/static/svg/metatags.svg" class="icon" alt="">
+                <span>Compare Meta Tags</span>
+            </a>
+
+            <a href="/platform/image-alt" class="nav-item">
+                <img src="/static/svg/image-alt.svg" class="icon" alt="">
+                <span>Compare Image Alt</span>
+            </a>
+            <a href="/scan/xml-sitemaps" class="nav-item">
+                <img src="/static/svg/sitemaps.svg" class="icon" alt="">
+                <span>XML Sitemaps</span>
+            </a>
+        </div>
+        <div style="flex: 1;"></div>
+        <a href="/platform/settings" class="nav-item">
+            <img src="/static/svg/settings.svg" class="icon" alt="">
+            <span>Settings</span>
+        </a>
+        <a href="#" onclick="showLogoutModal(event)" class="nav-item">
+            <img src="/static/svg/logout.svg" class="icon" alt="">
+            <span>Logout</span>
+        </a>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <main class="main-content">
+        <header class="header">
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <img src="/static/svg/burger-menu.svg" alt="Menu">
+            </button>
+            <a href="javascript:history.back()" class="back-btn-header" title="Go Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Back</span>
+            </a>
+            {% if user %}
+            <div class="credits-display-header" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 124, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(79, 124, 255, 0.2);">
+                <span style="color: #64748B; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Credits</span>
+                <span style="color: #4F7CFF; font-weight: 700; font-size: 0.95rem;">{{ user.credits }}</span>
+            </div>
+            {% endif %}
+            <a href="#" onclick="showLogoutModal(event)" class="logout-btn-header" style="text-decoration: none; color: #64748B; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                <img src="/static/svg/logout.svg" alt="Logout" width="20" height="20">
+                <span>Logout</span>
+            </a>
+        </header>
+
+        <div class="content-area">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1 style="margin: 0;">Content Comparison</h1>
+                    <p style="color: #94A3B8; margin-top: 5px;">Compare visible text between Staging and Live URLs</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="input-split">
+                    <div class="form-group">
+                        <label class="form-label">Live URL<span class="required">*</span></label>
+                        <input type="text" id="live_url" class="form-input" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Staging URL<span class="required">*</span></label>
+                        <input type="text" id="staging_url" class="form-input" placeholder="https://staging.example.com">
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 1rem;">
+                    <button class="btn btn-primary {% if user.credits < 5 %}action-disabled{% endif %}" id="start-comparison">
+                        <span>Compare URLs</span>
+                        <div class="spinner" id="btn-spinner" style="display: none; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; width: 14px; height: 14px; animation: spin 0.8s linear infinite; margin-left: 10px;"></div>
+                    </button>
+                    <p style="font-size: 0.75rem; color: #94A3B8; margin-top: 5px;">Cost: 5 Credits</p>
+                </div>
+            </div>
+
+            <div class="card results-card" id="results-card">
+                <h3 style="margin-top: 0;">Comparison Summary</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="res-similarity">-</div>
+                        <div class="stat-label">Similarity</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="res-added" style="color: #10B981;">-</div>
+                        <div class="stat-label">Added</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="res-removed" style="color: #EF4444;">-</div>
+                        <div class="stat-label">Removed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="res-modified" style="color: #F59E0B;">-</div>
+                        <div class="stat-label">Modified</div>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <a href="#" id="view-report" class="btn btn-primary" target="_blank">View HTML Report</a>
+                    <a href="#" id="download-txt" class="btn btn-ghost" target="_blank">Download TXT</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/toast.js"></script>
+    <script src="/static/js/main.js?v=2.23"></script>
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <script>
+        document.getElementById('start-comparison').addEventListener('click', async function() {
+            const liveUrl = document.getElementById('live_url').value.trim();
+            const stagingUrl = document.getElementById('staging_url').value.trim();
+            const btn = this;
+            const spinner = document.getElementById('btn-spinner');
+
+            if (!liveUrl || !stagingUrl) {
+                showToast("Please enter both URLs", "error");
+                return;
+            }
+
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/compare-urls', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ live_url: liveUrl, staging_url: stagingUrl })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast("Comparison successful!", "success");
+                    document.getElementById('results-card').style.display = 'block';
+                    document.getElementById('res-similarity').textContent = data.summary.similarity;
+                    document.getElementById('res-added').textContent = data.summary.added;
+                    document.getElementById('res-removed').textContent = data.summary.removed;
+                    document.getElementById('res-modified').textContent = data.summary.modified;
+                    
+                    document.getElementById('view-report').href = data.report_url;
+                    document.getElementById('download-txt').href = data.txt_report_url;
+                    
+                    // Update credits in header if present
+                    const creditsVal = document.querySelector('.credits-display-header span:last-child');
+                    if (creditsVal) {
+                        const current = parseInt(creditsVal.textContent);
+                        creditsVal.textContent = current - 5;
+                    }
+                } else {
+                    showToast(data.detail || "Error during comparison", "error");
+                }
+            } catch (err) {
+                showToast("Network error occurred", "error");
+            } finally {
+                btn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

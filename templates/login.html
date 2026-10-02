@@ -2,6 +2,12 @@
 <html lang="en" class="dark">
 
 <head>
+    <script>
+        // Prevent FOUC by applying collapsed state before DOM renders
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed-preload');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Audit My Websites</title>
@@ -22,6 +28,7 @@
             transition: color 0.2s ease;
         }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/static/svg/sitetester-icon.svg">
 </head>
 
 <body class="bg-slate-950 text-slate-200 min-h-screen flex items-center justify-center p-4">
@@ -46,69 +53,82 @@
                 <span class="font-bold text-white tracking-tight text-xl">Audit My Websites</span>
             </div>
 
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-white mb-2">Welcome back</h2>
-                <p class="text-slate-400 text-sm">Enter your credentials to access your account</p>
+
+            <!-- Primary Action: Google Auth -->
+            <div id="google-auth-container" class="w-full mb-6">
+                <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signin" data-ux_mode="popup"
+                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                </div>
+                <div id="google_btn_login" class="flex justify-center" style="min-height: 40px;"></div>
+
+                <!-- Fallback message for iframe environments -->
+                <div id="google-iframe-warning"
+                    class="hidden p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
+                    <p class="text-amber-500 text-sm mb-3">Google Sign-In is unavailable in the Responsive View.</p>
+                    <a href="/login" target="_top"
+                        class="inline-flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-colors">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        Open in New Tab
+                    </a>
+                </div>
             </div>
 
-            <form id="loginForm" class="space-y-4">
+            <div class="relative flex items-center justify-center mb-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-800"></div>
+                </div>
+                <span class="relative bg-slate-900 px-4 text-sm text-slate-500">or</span>
+            </div>
+
+            <!-- Secondary Action: Credentials -->
+            <form id="loginForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Username</label>
-                    <input type="text" name="username" required
-                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                        placeholder="Enter your username">
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Email</label>
+                    <div class="relative">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </div>
+                        <input type="text" name="username" required
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                            placeholder="Enter your email">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Password</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Password</label>
                     <div class="relative">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="lock" class="w-5 h-5"></i>
+                        </div>
                         <input type="password" id="loginPassword" name="password" required
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition pr-12"
-                            placeholder="••••••••">
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-12 py-3 text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                            placeholder="Enter your password">
                         <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')"
                             class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition focus:outline-none">
                             <i data-lucide="eye" id="loginEyeIcon" class="w-5 h-5"></i>
                         </button>
                     </div>
+                    <div class="mt-2 text-right">
+                        <a href="/forgot-password"
+                            class="text-sm text-blue-500 hover:text-blue-400 transition hover:underline">Forgot your
+                            password?</a>
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center gap-2 text-slate-400 cursor-pointer">
-                        <input type="checkbox"
-                            class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-slate-900">
-                        Remember me
-                    </label>
-                    <a href="/forgot-password" class="text-blue-500 hover:text-blue-400 transition">Forgot password?</a>
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/20 transition-all transform hover:scale-[1.01]">
+                        Log in
+                    </button>
                 </div>
-
-                <button type="submit"
-                    class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02]">
-                    Sign In
-                </button>
             </form>
 
-            <div class="my-6 relative flex items-center justify-center">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-slate-800"></div>
-                </div>
-                <span class="relative bg-slate-900 px-4 text-xs text-slate-500 uppercase tracking-wider">Or continue
-                    with</span>
-            </div>
-
-            <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signin" data-ux_mode="popup"
-                data-callback="handleCredentialResponse" data-auto_prompt="false">
-            </div>
-
-            <div class="w-full flex justify-center">
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
-                    data-text="signin_with" data-size="large" data-logo_alignment="left" data-width="380">
-                </div>
-            </div>
-
-            <div class="mt-8 text-center text-sm">
+            <div class="mt-8 text-center text-sm border-t border-slate-800/50 pt-6">
                 <p class="text-slate-400">Don't have an account?
                     <a href="/register"
-                        class="text-blue-500 hover:text-blue-400 font-medium transition hover:underline">Sign Up</a>
+                        class="text-blue-500 hover:text-blue-400 font-medium transition hover:underline">Sign up</a>
                 </p>
             </div>
         </div>
@@ -165,6 +185,69 @@
             }
             lucide.createIcons();
         }
+
+        // Responsive Google Button rendering with debouncing
+        let resizeTimer;
+        function renderGoogleButton() {
+            if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+                console.log("Google library not ready yet...");
+                return;
+            }
+
+            const refBtn = document.querySelector('button[type="submit"]');
+            const targetDiv = document.getElementById("google_btn_login");
+
+            if (refBtn && targetDiv) {
+                const width = refBtn.offsetWidth;
+                console.log(`Rendering Google button with width: ${width}`);
+                google.accounts.id.renderButton(
+                    targetDiv,
+                    {
+                        theme: "filled_black",
+                        size: "large",
+                        shape: "rectangular",
+                        text: "sign_in_with",
+                        logo_alignment: "left",
+                        width: width || 400
+                    }
+                );
+            }
+        }
+
+        function debouncedRender() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(renderGoogleButton, 200);
+        }
+
+        // Initialize with polling to be safe
+        function initGoogleButton() {
+            // Check if running in an iframe
+            const isInIframe = window.self !== window.top;
+
+            if (isInIframe) {
+                console.warn("Google Sign-In is disabled due to iframe environment.");
+                const warning = document.getElementById('google-iframe-warning');
+                const btn = document.getElementById('google_btn');
+                if (warning) warning.classList.remove('hidden');
+                if (btn) btn.classList.add('hidden');
+                return;
+            }
+
+            let attempts = 0;
+            const check = setInterval(() => {
+                attempts++;
+                if (window.google && window.google.accounts && window.google.accounts.id) {
+                    clearInterval(check);
+                    renderGoogleButton();
+                } else if (attempts > 50) {
+                    clearInterval(check);
+                    console.error("Google library failed to load after 5s");
+                }
+            }, 100);
+        }
+
+        window.addEventListener('load', initGoogleButton);
+        window.addEventListener('resize', debouncedRender);
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();

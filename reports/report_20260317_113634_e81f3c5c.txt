@@ -1,0 +1,42 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/aboutus/
+Live:    https://mikeschaferlaw.com/aboutus/
+Date:    2026-03-17 11:36:34
+
+SUMMARY
+- Similarity Score: 12%
+- Added Lines:      67
+- Removed Lines:    1
+- Modified Lines:   0
+
+OBSERVATIONS
+- ⚠️ Major content overhaul detected. The pages are significantly different.
+- 💰 Pricing-related content changes detected. Please verify accuracy.
+- 📞 Contact information or CTA changes detected.
+- 📄 Meta Description updated, potentially affecting search snippet appearance.
+
+ADDED CONTENT (top 20)
++ Guiding You Through the Personal Injury Maze
++ Contact Us Today
++ Call Us Today
++ 502-584-9511
++ Get Answers Today Free Consultation
++ Get a Free Case Review
++ Practice Areas
++ Car Accident Lawyer
++ DUI Accident Injury Lawyer
++ Distracted Driver Accident Lawyer
++ Uber & Lyft Rideshare Accident Attorney
++ Uber Accident Lawyer
++ Lyft Accident Lawyer
++ Car Accident Settlements
++ Child Injury Attorneys
++ Child Injured in Car Accident
++ Truck Accident Attorney
++ Delivery Truck Accident
++ Bus Accident Lawyer
++ Motorcycle Accidents
+
+REMOVED CONTENT (top 20)
+- /wp-content/uploads/2020/07/The_Schafer_Law_Office___Firm_Overview_h264_764x430-2.mp4

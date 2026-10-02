@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Content Comparison Report</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 2rem; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { background: var(--card); padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 2rem; }
+        h1 { margin: 0 0 1rem 0; color: var(--primary); }
+        .urls { font-size: 0.9rem; color: #64748b; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .metric-card { background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; text-align: center; }
+        .metric-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .metric-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; }
+        
+        .section { background: var(--card); padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 2rem; }
+        h2 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; }
+        
+        .observations { list-style: none; padding: 0; }
+        .observations li { background: #eff6ff; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
+        
+        .diff-list { margin: 0; padding: 0; list-style: none; max-height: 500px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 0.5rem; }
+        .diff-item { padding: 0.5rem 1rem; border-bottom: 1px solid #f1f5f9; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; }
+        .diff-added { background-color: #ecfdf5; color: #065f46; border-left: 4px solid var(--success); }
+        .diff-removed { background-color: #fef2f2; color: #991b1b; border-left: 4px solid var(--danger); }
+        .diff-modified { background-color: #fffbeb; color: #92400e; border-left: 4px solid var(--warning); }
+        .modified-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .arrow { text-align: center; color: var(--warning); font-weight: bold; }
+        
+        .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: bold; margin-left: auto; }
+        .tag-added { background: var(--success); color: white; }
+        .tag-removed { background: var(--danger); color: white; }
+        .tag-modified { background: var(--warning); color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Content Comparison Report</h1>
+            <div class="urls">
+                <div><strong>Staging:</strong> https://rizemedia.net/mikeschaferlaw/</div>
+                <div><strong>Live:</strong> https://mikeschaferlaw.com/</div>
+                <div><strong>Generated:</strong> 2026-03-17 11:30:46</div>
+            </div>
+            <div class="grid">
+                <div class="metric-card">
+                    <div class="metric-value">6%</div>
+                    <div class="metric-label">Similarity</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">286</div>
+                    <div class="metric-label">Added Lines</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">60</div>
+                    <div class="metric-label">Removed Lines</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Modified Lines</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💡 Observations</h2>
+            <ul class="observations">
+                
+                    <li>⚠️ Major content overhaul detected. The pages are significantly different.</li>
+                
+                    <li>💰 Pricing-related content changes detected. Please verify accuracy.</li>
+                
+                    <li>📞 Contact information or CTA changes detected.</li>
+                
+            </ul>
+        </div>
+
+        
+        <div class="section">
+            <h2>➕ Added Content <span class="tag tag-added">286</span></h2>
+            <div class="diff-list">
+                
+                    <div class="diff-item diff-added">30 Years of</div>
+                
+                    <div class="diff-item diff-added">Fighting for Louisville.</div>
+                
+                    <div class="diff-item diff-added">A Lifetime of Restoring Lives.</div>
+                
+                    <div class="diff-item diff-added">We Concentrate On Personal Injury Cases</div>
+                
+                    <div class="diff-item diff-added">Get a Free Case Review</div>
+                
+                    <div class="diff-item diff-added">Our commitment is simple:</div>
+                
+                    <div class="diff-item diff-added">protect your rights, maximize your</div>
+                
+                    <div class="diff-item diff-added">recovery, and keep you informed.</div>
+                
+                    <div class="diff-item diff-added">– Michael Schafer</div>
+                
+                    <div class="diff-item diff-added">You Don’t Have to</div>
+                
+                    <div class="diff-item diff-added">face This Alone</div>
+                
+                    <div class="diff-item diff-added">You Don’t Have to</div>
+                
+                    <div class="diff-item diff-added">face This Alone</div>
+                
+                    <div class="diff-item diff-added">Learn About Us</div>
+                
+                    <div class="diff-item diff-added">Call Us Today</div>
+                
+                    <div class="diff-item diff-added">502-584-9511</div>
+                
+                    <div class="diff-item diff-added">The Lawyer Who Wrote</div>
+                
+                    <div class="diff-item diff-added">the Book</div>
+                
+                    <div class="diff-item diff-added">The Lawyer Who Wrote</div>
+                
+                    <div class="diff-item diff-added">the Book</div>
+                
+                
+                    <div class="diff-item" style="text-align:center; color:#64748b;">... and 266 more lines ...</div>
+                
+            </div>
+        </div>
+        
+
+        
+        <div class="section">
+            <h2>➖ Removed Content <span class="tag tag-removed">60</span></h2>
+            <div class="diff-list">
+                
+                    <div class="diff-item diff-removed">We are devoted to protecting your legal rights and your interests. Your case will be handled with compassion, personal attention, professionalism and aggressive legal advocacy.</div>
+                
+                    <div class="diff-item diff-removed">Free consultation</div>
+                
+                    <div class="diff-item diff-removed">Learn About The Schafer Advantage</div>
+                
+                    <div class="diff-item diff-removed">PRACTICE AREAS</div>
+                
+                    <div class="diff-item diff-removed">How Can We Help You?</div>
+                
+                    <div class="diff-item diff-removed">Car Accidents</div>
+                
+                    <div class="diff-item diff-removed">Pedestrian Accidents</div>
+                
+                    <div class="diff-item diff-removed">Truck Accidents</div>
+                
+                    <div class="diff-item diff-removed">Wrongful Death & Fatal Accidents</div>
+                
+                    <div class="diff-item diff-removed">Dog Bites & Animal Attacks</div>
+                
+                    <div class="diff-item diff-removed">Motorcycle Accidents</div>
+                
+                    <div class="diff-item diff-removed">Slip & Fall/Premises Liability</div>
+                
+                    <div class="diff-item diff-removed">Bicycle Accidents</div>
+                
+                    <div class="diff-item diff-removed">Nursing Home/Elder Abuse</div>
+                
+                    <div class="diff-item diff-removed">Let Us be there for you</div>
+                
+                    <div class="diff-item diff-removed">30</div>
+                
+                    <div class="diff-item diff-removed">HELPING INJURED KENTUCKIANS</div>
+                
+                    <div class="diff-item diff-removed">years</div>
+                
+                    <div class="diff-item diff-removed">$1,050,000</div>
+                
+                    <div class="diff-item diff-removed">Mother Crushed By Truck Rollover</div>
+                
+                
+                    <div class="diff-item" style="text-align:center; color:#64748b;">... and 40 more lines ...</div>
+                
+            </div>
+        </div>
+        
+
+        
+    </div>
+</body>
+</html>

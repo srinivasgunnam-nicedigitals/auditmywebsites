@@ -1,0 +1,77 @@
+URL CONTENT COMPARISON REPORT
+==============================
+Staging: https://rizemedia.net/mikeschaferlaw/aboutus/
+Live:    https://mikeschaferlaw.com/aboutus/
+Date:    2026-03-17 15:20:56
+
+SUMMARY
+- Similarity Score: 33%
+- Added Lines:      138
+- Removed Lines:    28
+- Modified Lines:   5
+
+OBSERVATIONS
+- 📝 Moderate rewriting detected.
+- 💰 Pricing-related changes detected.
+- 📄 Meta Description updated.
+
+ADDED CONTENT (top 20)
++ ×
++ Home
++ Practice areas
++ Jeffersontown Car Accident Attorney
++ Jeffersontown Motorcycle Accident Attorney
++ Uber Accident Lawyer
++ Lyft Accident Lawyer
++ Truck Accident Attorney
++ Slip and Fall Accidents
++ Child Injury Attorney
++ Areas Served
++ Faqs
++ ×
++ About Us
++ Home
++ /
++ About Us
++ Guiding You Through the Personal Injury Maze
++ Contact Us Today
++ Call Us Today
+
+REMOVED CONTENT (top 20)
+- Close Menu
+- Practice Area
+- Show sub menu
+- Show sub menu
+- Show sub menu
+- Show sub menu
+- Jeffersontown Car Accident Lawyer
+- Jeffersontown Motorcycle Accident Lawyer
+- Show sub menu
+- Truck Accident Lawyers
+- Show sub menu
+- Slip And Fall Accidents
+- Child Injury Attorneys
+- Show sub menu
+- Show sub menu
+- Show sub menu
+- FAQs
+- Louisville Personal Injury Attorneys | The Schafer Law Office
+- Call Now for a Free Consultation
+- Menu
+
+MODIFIED CONTENT (top 20)
+OLD: Personal Injury
+NEW: Personal Injury Lawyer
+----------
+OLD: Frankfort Injury Lawyer
+NEW: Frankfort Personal Injury Lawyer
+----------
+OLD: Jeffersontown Injury Lawyer
+NEW: Jeffersontown Personal Injury Lawyer
+----------
+OLD: Delivery Truck Accident
+NEW: Delivery Truck Accidents
+----------
+OLD: Wrongful Death And Fatal Accidents
+NEW: Wrongful Death Lawyer
+----------
