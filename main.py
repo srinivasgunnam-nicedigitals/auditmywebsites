@@ -2,6 +2,8 @@ import os
 import sys
 import uvicorn
 import asyncio
+import datetime
+from contextlib import asynccontextmanager
 
 # Fix for Windows asyncio loop - Playwright requires ProactorEventLoop for subprocess support
 if sys.platform.startswith("win"):
@@ -17,11 +19,68 @@ from dotenv import load_dotenv
 import database
 import models
 from config import settings
-from database import get_db
+from database import get_db, SessionLocal
 from utils.ui import templates
 from routers.auth import get_current_user_from_cookie
 from sqlalchemy.orm import Session
 from fastapi import Depends
+
+# ── Watchdog: auto-expire sessions stuck in running/crawling > 2 hours ──────
+
+STUCK_SESSION_TIMEOUT_HOURS = 2
+WATCHDOG_INTERVAL_SECONDS   = 15 * 60   # check every 15 minutes
+
+async def _watchdog_loop():
+    """Background task: marks sessions stuck for > STUCK_SESSION_TIMEOUT_HOURS as error."""
+    await asyncio.sleep(60)  # brief startup delay so DB is fully ready
+    while True:
+        try:
+            db = SessionLocal()
+            try:
+                cutoff = datetime.datetime.utcnow() - datetime.timedelta(hours=STUCK_SESSION_TIMEOUT_HOURS)
+                stuck = (
+                    db.query(models.AuditSession)
+                    .filter(
+                        models.AuditSession.created_at < cutoff,
+                        models.AuditSession.completed_at.is_(None),
+                        models.AuditSession.status.notin_(
+                            ["completed", "stopped", "error",
+                             "error: credits exhausted"]
+                        ),
+                    )
+                    .all()
+                )
+                if stuck:
+                    print(f"[Watchdog] Found {len(stuck)} stuck session(s) — marking as error.", flush=True)
+                for session in stuck:
+                    print(f"  [Watchdog] Expiring {session.session_id} "
+                          f"(type={session.session_type}, status={session.status}, "
+                          f"created={session.created_at})", flush=True)
+                    session.status = "error"
+                    session.completed_at = datetime.datetime.utcnow()
+                db.commit()
+            finally:
+                db.close()
+        except Exception as e:
+            print(f"[Watchdog] Error during check: {e}", flush=True)
+
+        await asyncio.sleep(WATCHDOG_INTERVAL_SECONDS)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Start the session watchdog on app startup; cancel it on shutdown."""
+    task = asyncio.create_task(_watchdog_loop())
+    print("[Watchdog] Session watchdog started "
+          f"(timeout={STUCK_SESSION_TIMEOUT_HOURS}h, interval={WATCHDOG_INTERVAL_SECONDS//60}m).", flush=True)
+    try:
+        yield
+    finally:
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+        print("[Watchdog] Session watchdog stopped.", flush=True)
 
 # Import all routers
 from routers import auth, responsive, performance, accessibility, h1, meta_tags, phone, sitemaps, platform, seo, image_alt, export, contact, admin, comparison
@@ -41,7 +100,7 @@ os.makedirs("reports", exist_ok=True)
 database.Base.metadata.create_all(bind=database.engine)
 
 # Initialize FastAPI app
-app = FastAPI(title="SiteTester Pro", version="2.0.0")
+app = FastAPI(title="SiteTester Pro", version="2.0.0", lifespan=lifespan)
 
 # CORS Middleware
 app.add_middleware(
