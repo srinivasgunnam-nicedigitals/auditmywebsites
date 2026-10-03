@@ -381,3 +381,34 @@ async def view_accessibility_detail(result_id: int, request: Request, db: Sessio
 async def results_accessibility_redirect(session_id: str, request: Request, db: Session = Depends(get_db)):
     """Redirect old URL pattern to new one"""
     return await accessibility_results_view(session_id, request, db)
+
+@router.get("/api/results/accessibility/{session_id}")
+async def api_results_accessibility(session_id: str, request: Request, db: Session = Depends(get_db)):
+    """JSON API — returns accessibility audit results for a session."""
+    user = await get_current_user_from_cookie(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    session = db.query(models.AuditSession).filter(
+        models.AuditSession.session_id == session_id,
+        models.AuditSession.user_id == user.id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    results = db.query(models.AccessibilityAuditResult).filter_by(session_id=session_id).all()
+    return JSONResponse({
+        "session_id": session_id,
+        "status": session.status,
+        "results": [
+            {
+                "url": r.url,
+                "score": r.score,
+                "violations_count": r.violations_count,
+                "critical": r.critical_count,
+                "serious": r.serious_count,
+                "moderate": r.moderate_count,
+                "minor": r.minor_count,
+                "violations": json.loads(r.report_json) if r.report_json else [],
+            }
+            for r in results
+        ]
+    })

@@ -484,3 +484,30 @@ async def image_alt_results_view(session_id: str, request: Request, db: Session 
         "live_url": urls[0] if len(urls) > 0 else "",
         "staging_url": urls[1] if len(urls) >= 2 else ""
     })
+
+@router.get("/api/results/image-alt/{session_id}")
+async def api_results_image_alt(session_id: str, request: Request, db: Session = Depends(get_db)):
+    """JSON API — returns image-alt audit results for a session."""
+    user = await get_current_user_from_cookie(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    session = db.query(models.AuditSession).filter(
+        models.AuditSession.session_id == session_id,
+        models.AuditSession.user_id == user.id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    results = db.query(models.ImageAltResult).filter_by(session_id=session_id).all()
+    return JSONResponse({
+        "session_id": session_id,
+        "status": session.status,
+        "results": [
+            {
+                "url": r.url,
+                "score": r.score,
+                "images": json.loads(r.images_alt) if r.images_alt else [],
+                "image_count": len(json.loads(r.images_alt)) if r.images_alt else 0,
+            }
+            for r in results
+        ]
+    })

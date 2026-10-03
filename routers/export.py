@@ -194,3 +194,13 @@ async def export_responsive(session_id: str, db: Session = Depends(get_db)):
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename=responsive_audit_{session_id}.csv"}
     )
+
+@router.get("/static/{session_id}")
+async def export_static(session_id: str, db: Session = Depends(get_db)):
+    """Alias for /api/export/responsive/{session_id} — static screenshot audits."""
+    return await export_responsive(session_id, db)
+
+@router.get("/dynamic/{session_id}")
+async def export_dynamic(session_id: str, db: Session = Depends(get_db)):
+    """Alias for /api/export/responsive/{session_id} — dynamic video audits."""
+    return await export_responsive(session_id, db)

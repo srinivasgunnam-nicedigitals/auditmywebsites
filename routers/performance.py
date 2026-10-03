@@ -380,3 +380,34 @@ async def performance_results_view(session_id: str, request: Request, db: Sessio
 async def results_performance_redirect(session_id: str, request: Request, db: Session = Depends(get_db)):
     """Redirect old URL pattern to new one"""
     return await performance_results_view(session_id, request, db)
+
+@router.get("/api/results/performance/{session_id}")
+async def api_results_performance(session_id: str, request: Request, db: Session = Depends(get_db)):
+    """JSON API — returns performance audit results for a session."""
+    user = await get_current_user_from_cookie(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    session = db.query(models.AuditSession).filter(
+        models.AuditSession.session_id == session_id,
+        models.AuditSession.user_id == user.id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    results = db.query(models.PerformanceAuditResult).filter_by(session_id=session_id).all()
+    return JSONResponse({
+        "session_id": session_id,
+        "status": session.status,
+        "results": [
+            {
+                "url": r.url,
+                "device": r.device_preset,
+                "score": r.score,
+                "ttfb_ms": r.ttfb,
+                "fcp_ms": r.fcp,
+                "dom_load_ms": r.dom_load,
+                "page_load_ms": r.page_load,
+                "resource_count": r.resource_count,
+            }
+            for r in results
+        ]
+    })

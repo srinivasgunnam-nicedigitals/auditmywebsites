@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import Optional
 import os
 import uuid
@@ -20,8 +20,22 @@ from utils.comparison import (
 router = APIRouter()
 
 class ComparisonRequest(BaseModel):
-    staging_url: str
-    live_url: str
+    staging_url: Optional[str] = None
+    live_url: Optional[str] = None
+    # Aliases: accept url1/url2 as well as staging_url/live_url
+    url1: Optional[str] = None
+    url2: Optional[str] = None
+
+    @model_validator(mode="after")
+    def resolve_urls(self):
+        # url1/url2 take precedence if the primary fields are missing
+        if not self.staging_url and self.url1:
+            self.staging_url = self.url1
+        if not self.live_url and self.url2:
+            self.live_url = self.url2
+        if not self.staging_url or not self.live_url:
+            raise ValueError("Provide either staging_url+live_url or url1+url2")
+        return self
 
 @router.get("/platform/comparison", response_class=HTMLResponse)
 async def comparison_page(request: Request, user = Depends(get_current_user_from_cookie)):
