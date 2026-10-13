@@ -34,6 +34,12 @@ SKIP_EXTS = {'.jpg', '.jpeg', '.png', '.gif', '.pdf', '.css', '.js',
              '.zip', '.xml', '.json', '.svg', '.ico', '.mp4', '.webp',
              '.woff', '.woff2', '.mp3', '.wav', '.avi'}
 
+REQUEST_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
+
 # ========== HELPERS ==========
 
 
@@ -58,9 +64,10 @@ async def audit_image_alt_logic(urls: List[str], session_id: str):
         sem = asyncio.Semaphore(15) # Balanced concurrency for faster but stable audits
         
         async with httpx.AsyncClient(
-            follow_redirects=True, 
-            verify=False, 
+            follow_redirects=True,
+            verify=False,
             timeout=30.0,
+            headers=REQUEST_HEADERS,
             limits=httpx.Limits(max_keepalive_connections=5, max_connections=20)
         ) as client:
             # Get user_id from session for credit deduction

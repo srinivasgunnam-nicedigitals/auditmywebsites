@@ -81,7 +81,11 @@ async def discover_urls(start_url: str, max_pages: int = 999999, max_time: int =
             
             # --- Sitemap Discovery Fallback (using httpx for speed) ---
             sitemap_urls_found = set()
-            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True, verify=False) as client:
+            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True, verify=False, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5",
+                "Accept-Language": "en-US,en;q=0.5",
+            }) as client:
                 try:
                     sitemap_paths = ["sitemap.xml", "sitemap_index.xml"]
                     for sp in sitemap_paths:

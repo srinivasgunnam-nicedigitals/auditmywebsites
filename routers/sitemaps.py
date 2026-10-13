@@ -538,7 +538,7 @@ async def audit_sitemap_logic(url: str, session_id: str):
                         page_links = []
                         status_code = 0
                         try:
-                            async with httpx.AsyncClient(timeout=15.0, follow_redirects=True, verify=False) as check_client:
+                            async with httpx.AsyncClient(timeout=15.0, follow_redirects=True, verify=False, headers=SITEMAP_HEADERS) as check_client:
                                 try:
                                     # Fetch page content with retry
                                     page_resp = None
